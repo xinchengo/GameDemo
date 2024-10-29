@@ -1,27 +1,28 @@
 #include<SFML/Graphics.hpp>
 
 #include "entities.hpp"
+#include "utils.hpp"
 
 CircularEater::CircularEater()
 {
     center = sf::Vector2f(0.0f, 0.0f);
     currentRadius = 0.0f;
     growthRate = 0.1f;
-    color = sf::Color(rand(), rand(), rand());
+    color = sf::Color(randOpaqueColor());
 }
 CircularEater::CircularEater(sf::Vector2f position)
 {
     center = position;
     currentRadius = 0.0f;
     growthRate = 0.1f;
-    color = sf::Color(rand(), rand(), rand());
+    color = sf::Color(randOpaqueColor());
 }
 CircularEater::CircularEater(float growth_rate)
 {
     center = sf::Vector2f(0.0f, 0.0f);
     currentRadius = 0.0f;
     growthRate = growth_rate;
-    color = sf::Color(rand(), rand(), rand());
+    color = sf::Color(randOpaqueColor());
 }
 void CircularEater::step()
 {
