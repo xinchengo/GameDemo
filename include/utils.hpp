@@ -21,3 +21,7 @@ sf::Int32 randColor();
 sf::Int32 randOpaqueColor();
 
 float dis2(sf::Vector2f, sf::Vector2f);
+float cross(sf::Vector2f, sf::Vector2f);
+float dot(sf::Vector2f, sf::Vector2f);
+float disVecCirc(sf::Vector2f, sf::Vector2f, float);
+sf::Vector2f rotate(sf::Vector2f, float);

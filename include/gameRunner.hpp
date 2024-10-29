@@ -17,6 +17,7 @@ private:
     std::vector<Fish> allTheFish;
     
     bool isEaten(sf::Vector2f);
+    void updateSensoryState();
 
 public:
     GameRunner(sf::RenderWindow &);

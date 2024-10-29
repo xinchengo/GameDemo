@@ -1,7 +1,9 @@
 #include<SFML/Graphics.hpp>
+#include<cfloat>
 
 #include "entities.hpp"
 #include "utils.hpp"
+#include "constants.hpp"
 
 CircularEater::CircularEater()
 {
@@ -51,7 +53,7 @@ float CircularEater::getRadius()
 Fish::Fish(sf::Vector2f coord)
 {
     center = coord;
-    velocity = sf::Vector2f(0.0f, 0.0f);
+    velocity = sf::Vector2f(randBetween(-0.1f, 0.1f), randBetween(-0.1f, 0.1f));
     dead = false;
 }
 void Fish::step()
@@ -75,7 +77,15 @@ sf::Vector2f Fish::getCenter()
 {
     return center;
 }
+sf::Vector2f Fish::getVelocity()
+{
+    return velocity;
+}
 void Fish::die()
 {
     dead = true;
+}
+void Fish::updateVelocity()
+{
+    velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
 }
