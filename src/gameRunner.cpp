@@ -21,7 +21,7 @@ GameRunner::GameRunner(sf::RenderWindow &onWindow) : window(onWindow)
     frameNumber = 0;
     for(int i=0; i<100; i++)
     {
-        fish.emplace_back(Fish(
+        allTheFish.emplace_back(Fish(
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
     }
     
@@ -37,7 +37,7 @@ void GameRunner::step()
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
     }
     // the fish move
-    for(auto &fish : fish)
+    for(auto &fish : allTheFish)
     {
         fish.step();
     }
@@ -47,7 +47,7 @@ void GameRunner::step()
         eater.step();
     }
     // Remove all the fish been eaten
-    for(auto &fish : fish)
+    for(auto &fish : allTheFish)
     {
         if(isEaten(fish.getCenter()))
         {
@@ -61,7 +61,7 @@ void GameRunner::render()
     {
         eater.render(window);
     }
-    for(auto &fish : fish)
+    for(auto &fish : allTheFish)
     {
         fish.render(window);
     }

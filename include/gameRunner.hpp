@@ -14,7 +14,7 @@ private:
     int frameNumber;
     float height, width;
     std::vector<CircularEater> eaters;
-    std::vector<Fish> fish;
+    std::vector<Fish> allTheFish;
     
     bool isEaten(sf::Vector2f);
 
