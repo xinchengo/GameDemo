@@ -6,7 +6,6 @@
 #include "entities.hpp"
 #include "utils.hpp"
 
-
 class GameRunner
 {
 private:

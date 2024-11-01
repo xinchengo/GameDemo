@@ -1,5 +1,7 @@
 #include<SFML/Graphics.hpp>
 #include<cfloat>
+#include<algorithm>
+#include<array>
 
 #include "entities.hpp"
 #include "utils.hpp"
@@ -75,5 +77,31 @@ void Fish::die()
 }
 void Fish::updateVelocity()
 {
-    velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
+    velocity = strategy.predictVelocity(sensory, velocity);
+    // velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
+}
+
+FishStrategy::FishStrategy()
+{
+    for(auto &x : a)
+        x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
+    for(auto &x : b)
+        x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
+    c = randBetween(-0.1f, 0.1f);
+    acceleration_bias = randBetween(-0.1f, 0.1f);
+}
+sf::Vector2f FishStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
+{
+    auto speed = std::hypot(velocity.x, velocity.y);
+    
+    float prod1 = 0, prod2 = 0;
+    for(size_t i=0; i<CONST::LIDAR_CNT; i++)
+        prod1 += a[i] * sense.lidar[i], prod2 += b[i] * sense.lidar[i];
+    prod1 += speed * c;
+    prod1 += acceleration_bias;
+
+    float d_v = CONST::FISH_SPEED_CHANGE_MAX * std::tanh(prod1);
+    float d_o = CONST::FISH_DIRRECTION_CHANGE_MAX * std::tanh(prod2);
+    
+    return rotate(velocity * (1+d_v), d_o);
 }

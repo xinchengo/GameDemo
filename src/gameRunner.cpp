@@ -22,7 +22,7 @@ void GameRunner::updateSensoryState()
     {
         fish.sensory.lidar.fill(INFINITY);
 
-        for(size_t i=0; i<8; i++)
+        for(size_t i=0; i<CONST::LIDAR_CNT; i++)
         {
             auto v = rotate(fish.getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
             float arg = std::atan2(v.y, v.x);
@@ -50,7 +50,7 @@ void GameRunner::updateSensoryState()
 
         for(auto &eater : eaters)
         {
-            for(size_t i=0; i<8; i++)
+            for(size_t i=0; i<CONST::LIDAR_CNT; i++)
             {
                 auto v = rotate(fish.getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
                 fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
@@ -66,7 +66,7 @@ GameRunner::GameRunner(sf::RenderWindow &onWindow) : window(onWindow)
     height = window.getSize().y;
 
     frameNumber = 0;
-    for(int i=0; i<100; i++)
+    for(int i=0; i<30; i++)
     {
         allTheFish.emplace_back(Fish(
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));

@@ -11,4 +11,10 @@ namespace CONST
     constexpr std::array<float, 8> LIDAR_DIRECTIONS = 
         {-PI*7.0f/8.0f, -PI*5.0f/8.0f, -PI*3.0f/8.0f, -PI*1.0f/8.0f,
         PI*1.0f/8.0f, PI*3.0f/8.0f, PI*5.0f/8.0f, PI*7.0f/8.0f};
+
+    constexpr auto LIDAR_CNT = LIDAR_DIRECTIONS.size();
+
+    constexpr float FISH_SPEED_CHANGE_MAX = -0.01f;
+    
+    constexpr float FISH_DIRRECTION_CHANGE_MAX = PI / 100;
 }

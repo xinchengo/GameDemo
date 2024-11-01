@@ -1,6 +1,5 @@
 #pragma once
 
-#include<array>
 #include<vector>
 #include<array>
 
@@ -40,7 +39,7 @@ public:
 class SensoryState
 {
 public:
-    std::array<float, 8> lidar;
+    std::array<float, CONST::LIDAR_CNT> lidar;
 };
 
 
@@ -59,12 +58,25 @@ public:
     float getRadius();
 };
 
+
+class FishStrategy
+{
+private:
+    std::array<float, CONST::LIDAR_CNT> a, b;
+    float c;
+    float acceleration_bias;
+public:
+    FishStrategy();
+    sf::Vector2f predictVelocity(SensoryState &sense, sf::Vector2f velocity);
+};
+
 class Fish : public HasCenter, public HasVelocity
 {
 private:
     bool dead;
 public:
     SensoryState sensory;
+    FishStrategy strategy;
     Fish(sf::Vector2f);
     void step();
     void render(sf::RenderWindow &);
