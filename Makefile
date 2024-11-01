@@ -1,12 +1,16 @@
 CXX       := g++
-CXX_FLAGS := -std=c++17 -O3
-
-BIN := bin
-SRC := src
-INCLUDE := include
-
+BIN       := bin
+SRC       := src
+INCLUDE   := include
 LIBRARIES  := -lsfml-graphics -lsfml-window -lsfml-system
 EXECUTABLE := game
+
+ver = debug
+ifeq ($(ver), debug)
+CXX_FLAGS := -std=c++17 -O3 -DDEBUG
+else
+CXX_FLAGS := -std=c++17 -O3
+endif
 
 all: $(BIN)/$(EXECUTABLE)
 
