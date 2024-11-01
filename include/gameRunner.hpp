@@ -8,18 +8,27 @@
 
 class GameRunner
 {
-private:
-    sf::RenderWindow &window;
-    int frameNumber;
+protected:
+    size_t frameNumber;
     float height, width;
     std::vector<CircularEater> eaters;
     std::vector<Fish> allTheFish;
     
     bool isEaten(sf::Vector2f);
+    bool exceedBoundary(sf::Vector2f);
     void updateSensoryState();
 
 public:
-    GameRunner(sf::RenderWindow &);
+    void createRandomFish(int);
+    GameRunner(float, float);
     void step();
+};
+
+class RenderedGameRunner : public GameRunner
+{
+private:
+    sf::RenderWindow &window;
+public:
     void render();
+    RenderedGameRunner(sf::RenderWindow &);
 };

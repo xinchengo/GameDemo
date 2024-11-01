@@ -4,6 +4,7 @@ SRC       := src
 INCLUDE   := include
 LIBRARIES  := -lsfml-graphics -lsfml-window -lsfml-system
 EXECUTABLE := game
+FISHTRAINER := fishTrainer
 
 ver = debug
 ifeq ($(ver), debug)
@@ -12,13 +13,23 @@ else
 CXX_FLAGS := -std=c++17 -O3
 endif
 
-all: $(BIN)/$(EXECUTABLE)
+all: game fishtrainer
 
-run: clean all
+game: $(BIN)/$(EXECUTABLE)
+
+fishtrainer: $(BIN)/$(FISHTRAINER)
+
+run: clean game
 	clear
 	./$(BIN)/$(EXECUTABLE)
 
-$(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
+train: clean fishtrainer
+	clear
+	./$(BIN)/$(FISHTRAINER)
+
+$(BIN)/$(EXECUTABLE): $(shell find $(SRC)/* -not -name $(FISHTRAINER).cpp)
+	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
+$(BIN)/$(FISHTRAINER): $(shell find $(SRC)/* -not -name $(EXECUTABLE).cpp)
 	$(CXX) $(CXX_FLAGS) -I$(INCLUDE) $^ -o $@ $(LIBRARIES)
 
 clean:

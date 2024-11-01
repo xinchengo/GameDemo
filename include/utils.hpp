@@ -39,6 +39,11 @@ sf::Int32 randColor();
 /// @return The generated random color
 sf::Int32 randOpaqueColor();
 
+/// @brief normalize the angle x to [-PI, PI]
+/// @param x angle to be normalized
+/// @return 
+float normalizeAngle(float);
+
 /// @brief Calculate the euclidean distance between two points `a` and `b`
 /// @return The value of a.x * b.y - a.y * b.x
 float dis2(sf::Vector2f, sf::Vector2f);
@@ -65,7 +70,6 @@ float dot(sf::Vector2f, sf::Vector2f);
 /// @note The function assumes that point (0, 0) is not within 
 float disVecCirc(sf::Vector2f, sf::Vector2f, float);
 sf::Vector2f rotate(sf::Vector2f, float);
-
 /// @brief Softmax function for x
 template<typename T>
 T softmax(T x)

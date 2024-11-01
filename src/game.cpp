@@ -17,7 +17,8 @@ int main()
 
     bool paused = false;
 
-    GameRunner game(window);
+    RenderedGameRunner game(window);
+    game.createRandomFish(30);
 
     while (window.isOpen())
     {

@@ -2,6 +2,7 @@
 #include<cmath>
 
 #include "utils.hpp"
+#include "constants.hpp"
 
 std::mt19937 gen;
 
@@ -12,6 +13,14 @@ sf::Int32 randColor()
 sf::Int32 randOpaqueColor()
 {
     return gen() | 0xff;
+}
+
+float normalizeAngle(float x)
+{
+    float a = std::fmod(x + CONST::PI, 2.0f * CONST::PI);
+    if(a <= 0.0f)
+        a += 2.0f * CONST::PI;
+    return a - CONST::PI;
 }
 
 float dis2(sf::Vector2f a, sf::Vector2f b)

@@ -16,6 +16,10 @@ bool GameRunner::isEaten(sf::Vector2f pos)
     }
     return false;
 }
+bool GameRunner::exceedBoundary(sf::Vector2f pos)
+{
+    return (pos.x < 0.0f || pos.x > width || pos.y < 0.0f || pos.y > height);
+}
 void GameRunner::updateSensoryState()
 {
     for(auto &fish : allTheFish)
@@ -60,18 +64,20 @@ void GameRunner::updateSensoryState()
     }
 }
 
-GameRunner::GameRunner(sf::RenderWindow &onWindow) : window(onWindow)
+GameRunner::GameRunner(float width, float height) : width(width), height(height)
 {
-    width = window.getSize().x;
-    height = window.getSize().y;
-
     frameNumber = 0;
+}
+RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
+    GameRunner((float)window.getSize().x, (float)window.getSize().y),
+    window(window) {}
+void GameRunner::createRandomFish(int cnt)
+{
     for(int i=0; i<30; i++)
     {
         allTheFish.emplace_back(Fish(
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
     }
-
     updateSensoryState();
 }
 void GameRunner::step()
@@ -83,7 +89,7 @@ void GameRunner::step()
         fish.updateVelocity();
     }
     // If frameNumber satisfies a certain condition, create a new CircularEater
-    if(frameNumber % 480 == 0)
+    if(frameNumber % 240 == 0 && eaters.size() <= 20)
     {
         eaters.emplace_back(CircularEater(
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
@@ -101,15 +107,15 @@ void GameRunner::step()
     // Remove all the fish been eaten
     for(auto &fish : allTheFish)
     {
-        if(isEaten(fish.getCenter()))
+        if(isEaten(fish.getCenter()) || exceedBoundary(fish.getCenter()))
         {
-            fish.die();
+            fish.die(frameNumber);
         }
     }
     // Update the sensory states of all the fish
     updateSensoryState();
 }
-void GameRunner::render()
+void RenderedGameRunner::render()
 {
     for(auto &eater : eaters)
     {
@@ -117,6 +123,9 @@ void GameRunner::render()
     }
     for(auto &fish : allTheFish)
     {
-        fish.render(window);
+        if(!fish.isDead(frameNumber))
+        {
+            fish.render(window);
+        }
     }
 }

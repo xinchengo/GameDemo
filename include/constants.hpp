@@ -4,6 +4,8 @@
 
 namespace CONST
 {
+    constexpr size_t FRAME_CNT_INFINITY = -1;
+
     constexpr float PI = 3.1415926535897932384626f;
 
     constexpr float ANG_EPS = PI / 1000;
@@ -14,7 +16,11 @@ namespace CONST
 
     constexpr auto LIDAR_CNT = LIDAR_DIRECTIONS.size();
 
-    constexpr float FISH_SPEED_CHANGE_MAX = -0.01f;
+    constexpr float FISH_SPEED_MIN = 0.05f;
+
+    constexpr float FISH_SPEED_MAX = 0.5f;
+
+    constexpr float FISH_SPEED_CHANGE_MAX = 0.01f;
     
     constexpr float FISH_DIRRECTION_CHANGE_MAX = PI / 100;
 }

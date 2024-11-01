@@ -3,7 +3,6 @@
 #include<vector>
 #include<array>
 
-#include "fishStrategy.hpp"
 #include "constants.hpp"
 
 class HasCenter
@@ -73,13 +72,14 @@ public:
 class Fish : public HasCenter, public HasVelocity
 {
 private:
-    bool dead;
+    size_t deathTime;
 public:
     SensoryState sensory;
     FishStrategy strategy;
     Fish(sf::Vector2f);
     void step();
     void render(sf::RenderWindow &);
-    void die();
+    void die(size_t);
+    bool isDead(size_t);
     void updateVelocity();
 };

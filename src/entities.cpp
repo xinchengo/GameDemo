@@ -51,18 +51,17 @@ float CircularEater::getRadius()
 Fish::Fish(sf::Vector2f coord)
 {
     center = coord;
-    velocity = sf::Vector2f(randBetween(-0.1f, 0.1f), randBetween(-0.1f, 0.1f));
-    dead = false;
+    float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
+    float arg = randBetween(-CONST::PI, CONST::PI);
+    velocity = rotate(sf::Vector2f(speed, 0), arg);
+    deathTime = CONST::FRAME_CNT_INFINITY;
 }
 void Fish::step()
 {
     center += velocity;
 }
 void Fish::render(sf::RenderWindow &window)
-{
-    if(dead)
-        return;
-    
+{   
     sf::CircleShape triangle(10.0f);
     triangle.setPointCount(3);
     triangle.setOrigin(10.0f, 10.0f);
@@ -71,9 +70,13 @@ void Fish::render(sf::RenderWindow &window)
 
     window.draw(triangle);
 }
-void Fish::die()
+bool Fish::isDead(size_t frameNumber)
 {
-    dead = true;
+    return deathTime <= frameNumber;
+}
+void Fish::die(size_t frameNumber)
+{
+    deathTime = frameNumber;
 }
 void Fish::updateVelocity()
 {
@@ -100,8 +103,10 @@ sf::Vector2f FishStrategy::predictVelocity(SensoryState &sense, sf::Vector2f vel
     prod1 += speed * c;
     prod1 += acceleration_bias;
 
-    float d_v = CONST::FISH_SPEED_CHANGE_MAX * std::tanh(prod1);
-    float d_o = CONST::FISH_DIRRECTION_CHANGE_MAX * std::tanh(prod2);
+    float nv = CONST::FISH_SPEED_CHANGE_MAX * std::tanh(prod1);
+    float no = CONST::FISH_DIRRECTION_CHANGE_MAX * std::tanh(prod2);
     
-    return rotate(velocity * (1+d_v), d_o);
+    nv = std::clamp(speed + nv, CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
+    
+    return rotate((nv / speed) * velocity, no);
 }
