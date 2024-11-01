@@ -8,46 +8,42 @@
 CircularEater::CircularEater()
 {
     center = sf::Vector2f(0.0f, 0.0f);
-    currentRadius = 0.0f;
+    radius = 0.0f;
     growthRate = 0.1f;
     color = sf::Color(randOpaqueColor());
 }
 CircularEater::CircularEater(sf::Vector2f position)
 {
     center = position;
-    currentRadius = 0.0f;
+    radius = 0.0f;
     growthRate = 0.1f;
     color = sf::Color(randOpaqueColor());
 }
 CircularEater::CircularEater(float growth_rate)
 {
     center = sf::Vector2f(0.0f, 0.0f);
-    currentRadius = 0.0f;
+    radius = 0.0f;
     growthRate = growth_rate;
     color = sf::Color(randOpaqueColor());
 }
 void CircularEater::step()
 {
-    currentRadius += growthRate;
+    radius += growthRate;
 }
 void CircularEater::render(sf::RenderWindow &window)
 {
-    if(currentRadius == 0.0f)
+    if(radius == 0.0f)
         return;
-    sf::CircleShape circ(currentRadius);
-    circ.setOrigin(currentRadius, currentRadius);
+    sf::CircleShape circ(radius);
+    circ.setOrigin(radius, radius);
     circ.setFillColor(color);
     circ.setPosition(center);
 
     window.draw(circ);
 }
-sf::Vector2f CircularEater::getCenter()
-{
-    return center;
-}
 float CircularEater::getRadius()
 {
-    return currentRadius;
+    return radius;
 }
 
 Fish::Fish(sf::Vector2f coord)
@@ -72,14 +68,6 @@ void Fish::render(sf::RenderWindow &window)
     triangle.setPosition(center);
 
     window.draw(triangle);
-}
-sf::Vector2f Fish::getCenter()
-{
-    return center;
-}
-sf::Vector2f Fish::getVelocity()
-{
-    return velocity;
 }
 void Fish::die()
 {
