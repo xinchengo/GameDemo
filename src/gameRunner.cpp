@@ -24,6 +24,11 @@ void GameRunner::updateSensoryState()
 {
     for(auto &fish : allTheFish)
     {
+        if(fish.isDead(frameNumber))
+        {
+            continue;
+        }
+
         fish.sensory.lidar.fill(INFINITY);
 
         for(size_t i=0; i<CONST::LIDAR_CNT; i++)
