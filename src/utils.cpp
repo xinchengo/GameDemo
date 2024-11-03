@@ -60,3 +60,20 @@ sf::Vector2f rotate(sf::Vector2f a, float x)
     return sf::Vector2f(a.x * cos(x) - a.y * sin(x),
         a.x * sin(x) + a.y * cos(x));
 }
+
+float mutate(float x)
+{
+    if(randBetween(0.0f, 1.0f) <= 0.001)
+    {
+        x *= randBetween(-2.0f, 2.0f);
+    }
+    if(randBetween(0.0f, 1.0f) <= 0.005)
+    {
+        x *= randBetween(0.8f, 1.2f);
+    }
+    if(randBetween(0.0f, 1.0f) <= 0.005)
+    {
+        x += randBetween(-0.01f, 0.01f);
+    }
+    return x;
+}

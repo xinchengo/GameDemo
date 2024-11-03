@@ -66,6 +66,7 @@ private:
     float acceleration_bias;
 public:
     FishStrategy();
+    void mutate();
     sf::Vector2f predictVelocity(SensoryState &sense, sf::Vector2f velocity);
 };
 
@@ -76,10 +77,11 @@ private:
 public:
     SensoryState sensory;
     FishStrategy strategy;
-    Fish(sf::Vector2f);
+    Fish(sf::Vector2f, FishStrategy=FishStrategy());
     void step();
     void render(sf::RenderWindow &);
     void die(size_t);
     bool isDead(size_t);
+    size_t timeOfDeath();
     void updateVelocity();
 };

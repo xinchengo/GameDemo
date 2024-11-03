@@ -76,3 +76,5 @@ T softmax(T x)
 {
     return 1 / (1 + std::exp(-x));
 }
+
+float mutate(float);

@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <algorithm>
+#include <numeric>
 
 #include "gameRunner.hpp"
 #include "utils.hpp"
@@ -71,17 +72,23 @@ void GameRunner::updateSensoryState()
 
 GameRunner::GameRunner(float width, float height) : width(width), height(height)
 {
-    frameNumber = 0;
+    clear();
 }
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
     GameRunner((float)window.getSize().x, (float)window.getSize().y),
     window(window) {}
+void GameRunner::clear()
+{
+    frameNumber = 0;
+    eaters.clear();
+    allTheFish.clear();
+}
 void GameRunner::createRandomFish(int cnt)
 {
     for(int i=0; i<30; i++)
     {
-        allTheFish.emplace_back(Fish(
-            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
+        allTheFish.emplace_back(
+            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)));
     }
     updateSensoryState();
 }
@@ -120,6 +127,17 @@ void GameRunner::step()
     // Update the sensory states of all the fish
     updateSensoryState();
 }
+bool GameRunner::fishAllDead()
+{
+    for(auto &fish : allTheFish)
+    {
+        if(!fish.isDead(frameNumber))
+        {
+            return false;
+        }
+    }
+    return true;
+}
 void RenderedGameRunner::render()
 {
     for(auto &eater : eaters)
@@ -133,4 +151,47 @@ void RenderedGameRunner::render()
             fish.render(window);
         }
     }
+}
+
+EvolutionGameRunner::EvolutionGameRunner(float width, float height) : GameRunner(width, height) {}
+TrainStats EvolutionGameRunner::train(std::vector<FishStrategy> &strategies)
+{
+    clear();
+
+    for(auto &strategy : strategies)
+    {
+        allTheFish.emplace_back(
+            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)),
+            strategy);
+    }
+    do
+    {
+        step();
+    } while (!fishAllDead());
+    
+    TrainStats output;
+
+    std::vector<size_t> lifespan(strategies.size());
+    for(size_t i=0; i<strategies.size(); i++)
+    {
+        lifespan[i] = allTheFish[i].timeOfDeath();
+    }
+    std::partial_sum(lifespan.begin(), lifespan.end(), lifespan.begin());
+    output.meanLifespan = (float)lifespan.back() / strategies.size();
+
+    for(size_t i=0; i<strategies.size(); i++)
+    {
+        auto ind = randint((size_t)1, lifespan.back());
+        auto k = std::lower_bound(lifespan.begin(), lifespan.end(), ind) - lifespan.begin();
+        output.yieldingStrategies.emplace_back(allTheFish[k].strategy);
+    }
+
+    // Mutate the strategies
+
+    for(auto &strategy : output.yieldingStrategies)
+    {
+        strategy.mutate();
+    }
+
+    return output;
 }

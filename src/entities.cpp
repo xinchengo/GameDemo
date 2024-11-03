@@ -48,7 +48,15 @@ float CircularEater::getRadius()
     return radius;
 }
 
-Fish::Fish(sf::Vector2f coord)
+// Fish::Fish(sf::Vector2f coord)
+// {
+//     center = coord;
+//     float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
+//     float arg = randBetween(-CONST::PI, CONST::PI);
+//     velocity = rotate(sf::Vector2f(speed, 0), arg);
+//     deathTime = CONST::FRAME_CNT_INFINITY;
+// }
+Fish::Fish(sf::Vector2f coord, FishStrategy stra) : strategy(stra)
 {
     center = coord;
     float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
@@ -74,6 +82,10 @@ bool Fish::isDead(size_t frameNumber)
 {
     return deathTime <= frameNumber;
 }
+size_t Fish::timeOfDeath()
+{
+    return deathTime;
+}
 void Fish::die(size_t frameNumber)
 {
     deathTime = frameNumber;
@@ -92,6 +104,19 @@ FishStrategy::FishStrategy()
         x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
     c = randBetween(-0.1f, 0.1f);
     acceleration_bias = randBetween(-0.1f, 0.1f);
+}
+void FishStrategy::mutate()
+{
+    for(auto &x : a)
+    {
+        x = ::mutate(x);
+    }
+    for(auto &x : b)
+    {
+        x = ::mutate(x);
+    }
+    c = ::mutate(c);
+    acceleration_bias = ::mutate(acceleration_bias);
 }
 sf::Vector2f FishStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
 {

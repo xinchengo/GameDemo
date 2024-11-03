@@ -19,9 +19,11 @@ protected:
     void updateSensoryState();
 
 public:
+    void clear();
     void createRandomFish(int);
     GameRunner(float, float);
     void step();
+    bool fishAllDead();
 };
 
 class RenderedGameRunner : public GameRunner
@@ -31,4 +33,18 @@ private:
 public:
     void render();
     RenderedGameRunner(sf::RenderWindow &);
+};
+
+struct TrainStats
+{
+    float meanLifespan;
+    std::vector<FishStrategy> yieldingStrategies;
+};
+
+class EvolutionGameRunner : public GameRunner
+{
+private:
+public:
+    EvolutionGameRunner(float, float);
+    TrainStats train(std::vector<FishStrategy> &);
 };
