@@ -38,6 +38,7 @@ public:
 struct TrainStats
 {
     float meanLifespan;
+    std::vector<float> lifespans;
     std::vector<FishStrategy> yieldingStrategies;
 };
 

@@ -176,6 +176,7 @@ TrainStats EvolutionGameRunner::train(std::vector<FishStrategy> &strategies)
     {
         lifespan[i] = allTheFish[i].timeOfDeath();
     }
+    output.lifespans.assign(lifespan.begin(), lifespan.end());
     std::partial_sum(lifespan.begin(), lifespan.end(), lifespan.begin());
     output.meanLifespan = (float)lifespan.back() / strategies.size();
 
