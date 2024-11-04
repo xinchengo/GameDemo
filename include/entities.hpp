@@ -4,6 +4,7 @@
 #include<array>
 
 #include "constants.hpp"
+#include "utils.hpp"
 
 class HasCenter
 {
@@ -28,6 +29,11 @@ public:
     {
         velocity = C;
     }
+    void setRandomVelocity(float x)
+    {
+        float arg = randBetween(-CONST::PI, CONST::PI);
+        velocity = rotate(sf::Vector2f(x, 0.0f), arg);
+    }
     sf::Vector2f getVelocity()
     {
         return velocity;
@@ -42,7 +48,7 @@ public:
 };
 
 
-class CircularEater : public HasCenter
+class CircularEater : public HasCenter, public HasVelocity
 {
 private:
     float radius;

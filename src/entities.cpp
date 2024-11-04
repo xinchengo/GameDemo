@@ -9,6 +9,8 @@
 
 CircularEater::CircularEater()
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = sf::Vector2f(0.0f, 0.0f);
     radius = 0.0f;
     growthRate = 0.1f;
@@ -16,6 +18,8 @@ CircularEater::CircularEater()
 }
 CircularEater::CircularEater(sf::Vector2f position)
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = position;
     radius = 0.0f;
     growthRate = 0.1f;
@@ -23,6 +27,8 @@ CircularEater::CircularEater(sf::Vector2f position)
 }
 CircularEater::CircularEater(float growth_rate)
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = sf::Vector2f(0.0f, 0.0f);
     radius = 0.0f;
     growthRate = growth_rate;
@@ -31,6 +37,16 @@ CircularEater::CircularEater(float growth_rate)
 void CircularEater::step()
 {
     radius += growthRate;
+    auto n = center + velocity;
+    if(n.x < 0 || n.x > 1280)
+    {
+        velocity.x = -velocity.x;
+    }
+    if(n.y < 0 || n.y > 720)
+    {
+        velocity.y = -velocity.y;
+    }
+    center += velocity;
 }
 void CircularEater::render(sf::RenderWindow &window)
 {
