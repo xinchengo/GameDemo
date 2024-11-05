@@ -2,6 +2,7 @@
 
 #include<vector>
 #include<array>
+#include<memory>
 
 #include "constants.hpp"
 #include "utils.hpp"
@@ -61,17 +62,23 @@ public:
     void step();
     void render(sf::RenderWindow &);
     float getRadius();
+    void bounce(uint8_t);
 };
 
-
 class FishStrategy
+{
+public:
+    virtual sf::Vector2f predictVelocity(SensoryState &, sf::Vector2f) = 0;
+};
+
+class LinearStrategy : public FishStrategy
 {
 private:
     std::array<float, CONST::LIDAR_CNT> a, b;
     float c;
     float acceleration_bias;
 public:
-    FishStrategy();
+    LinearStrategy();
     void mutate();
     sf::Vector2f predictVelocity(SensoryState &sense, sf::Vector2f velocity);
 };
@@ -82,8 +89,8 @@ private:
     size_t deathTime;
 public:
     SensoryState sensory;
-    FishStrategy strategy;
-    Fish(sf::Vector2f, FishStrategy=FishStrategy());
+    std::unique_ptr<FishStrategy> strategy;
+    Fish(sf::Vector2f, std::unique_ptr<FishStrategy>);
     void step();
     void render(sf::RenderWindow &);
     void die(size_t);

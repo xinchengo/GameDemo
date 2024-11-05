@@ -7,7 +7,7 @@
 int main()
 {
     std::vector<FishStrategy> strategies(100);
-    EvolutionGameRunner runner(1280.f, 720.f);
+    HeadlessGameRunner runner(1280.f, 720.f);
 
     std::ofstream logfile("./bin/1.txt");
     logfile << "np.array([";

@@ -18,7 +18,7 @@ int main()
     bool paused = false;
 
     RenderedGameRunner game(window);
-    game.createRandomFish(30);
+    game.newRandomFish(CONST::FISH_STRATEGY::LINEAR, 30);
 
     while (window.isOpen())
     {
