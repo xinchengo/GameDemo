@@ -83,6 +83,13 @@ public:
     sf::Vector2f predictVelocity(SensoryState &sense, sf::Vector2f velocity);
 };
 
+class BaselineStrategy : public FishStrategy
+{
+private:
+public:
+    sf::Vector2f predictVelocity(SensoryState &, sf::Vector2f);
+};
+
 class Fish : public HasCenter, public HasVelocity
 {
 private:

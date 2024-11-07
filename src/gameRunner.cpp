@@ -13,6 +13,8 @@ Fish* GameRunner::createFish(sf::Vector2f pos, CONST::FISH_STRATEGY stra)
     {
         case CONST::FISH_STRATEGY::LINEAR:
             return new Fish(pos, std::make_unique<LinearStrategy>());
+        case CONST::FISH_STRATEGY::BASELINE:
+            return new Fish(pos, std::make_unique<BaselineStrategy>());
         default:
             return nullptr;
     }

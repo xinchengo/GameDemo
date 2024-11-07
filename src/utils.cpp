@@ -43,13 +43,6 @@ float length(sf::Vector2f a)
 
 float disVecCirc(sf::Vector2f a, sf::Vector2f P, float r)
 {
-    /*
-    Compute the longest length the vector `a`
-    can reach before hitting the circle centering at `P` with
-    radius `r`.
-
-    Assuming that r < |OP|.
-    */
     if(dot(a, P) <= 0.0f || std::abs(cross(a, P) / length(a)) >= r)
         return INFINITY;
     else

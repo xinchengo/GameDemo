@@ -19,6 +19,7 @@ int main()
 
     RenderedGameRunner game(window);
     game.newRandomFish(CONST::FISH_STRATEGY::LINEAR, 30);
+    game.newRandomFish(CONST::FISH_STRATEGY::BASELINE, 30);
 
     while (window.isOpen())
     {
