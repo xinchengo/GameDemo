@@ -1,71 +1,93 @@
 #include <cfloat>
 #include <algorithm>
 #include <numeric>
+#include <memory>
 
 #include "gameRunner.hpp"
 #include "utils.hpp"
 #include "constants.hpp"
 
+Fish* GameRunner::createFish(sf::Vector2f pos, CONST::FISH_STRATEGY stra)
+{
+    switch(stra)
+    {
+        case CONST::FISH_STRATEGY::LINEAR:
+            return new Fish(pos, std::make_unique<LinearStrategy>());
+        case CONST::FISH_STRATEGY::BASELINE:
+            return new Fish(pos, std::make_unique<BaselineStrategy>());
+        default:
+            return nullptr;
+    }
+}
+Fish* GameRunner::createFish(sf::Vector2f pos, std::unique_ptr<FishStrategy> &stra)
+{
+    return new Fish(pos, std::move(stra));
+}
+CircularEater* GameRunner::createCircularEater(sf::Vector2f pos)
+{
+    return new CircularEater(pos);
+}
+// Fish* createFish(sf::Vector2f pos, std::unique_ptr<FishStrategy> stra)
+// {
+//     return new Fish(pos, std::move(stra));
+// }
 bool GameRunner::isEaten(sf::Vector2f pos)
 {
     for(auto &eater : eaters)
     {
-        if(dis2(eater.getCenter(), pos) < eater.getRadius())
+        if(dis2(eater->getCenter(), pos) < eater->getRadius())
         {
             return true;
         }
     }
     return false;
 }
-bool GameRunner::exceedBoundary(sf::Vector2f pos)
+uint8_t GameRunner::exceedBoundary(sf::Vector2f pos)
 {
-    return (pos.x < 0.0f || pos.x > width || pos.y < 0.0f || pos.y > height);
+    return (pos.x < 0.0f | pos.x > width) | ((pos.y < 0.0f || pos.y > height) << 1);
 }
-void GameRunner::updateSensoryState()
+void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
 {
-    for(auto &fish : allTheFish)
+    if(fish->isDead(frameNumber))
     {
-        if(fish.isDead(frameNumber))
+        return;
+    }
+
+    fish->sensory.lidar.fill(INFINITY);
+
+    for(size_t i=0; i<CONST::LIDAR_CNT; i++)
+    {
+        auto v = rotate(fish->getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
+        float arg = std::atan2(v.y, v.x);
+        if(std::abs(arg) < CONST::PI / 2 - CONST::ANG_EPS)
         {
-            continue;
+            fish->sensory.lidar[i] = std::min(fish->sensory.lidar[i],
+                (width - fish->getCenter().x) / std::cos(arg));
         }
+        if(std::abs(arg) > CONST::PI / 2 + CONST::ANG_EPS)
+        {
+            fish->sensory.lidar[i] = std::min(fish->sensory.lidar[i],
+                fish->getCenter().x / std::cos(CONST::PI - arg));
+        }
+        if(CONST::ANG_EPS < arg && arg < CONST::PI - CONST::ANG_EPS)
+        {
+            fish->sensory.lidar[i] = std::min(fish->sensory.lidar[i],
+                (height - fish->getCenter().y) / std::sin(arg));
+        }
+        if(-CONST::ANG_EPS > arg && arg > -CONST::PI + CONST::ANG_EPS)
+        {
+            fish->sensory.lidar[i] = std::min(fish->sensory.lidar[i],
+                fish->getCenter().y / std::sin(-arg));
+        }
+    }
 
-        fish.sensory.lidar.fill(INFINITY);
-
+    for(auto &eater : eaters)
+    {
         for(size_t i=0; i<CONST::LIDAR_CNT; i++)
         {
-            auto v = rotate(fish.getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
-            float arg = std::atan2(v.y, v.x);
-            if(std::abs(arg) < CONST::PI / 2 - CONST::ANG_EPS)
-            {
-                fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
-                    (width - fish.getCenter().x) / std::cos(arg));
-            }
-            if(std::abs(arg) > CONST::PI / 2 + CONST::ANG_EPS)
-            {
-                fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
-                    fish.getCenter().x / std::cos(CONST::PI - arg));
-            }
-            if(CONST::ANG_EPS < arg && arg < CONST::PI - CONST::ANG_EPS)
-            {
-                fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
-                    (height - fish.getCenter().y) / std::sin(arg));
-            }
-            if(-CONST::ANG_EPS > arg && arg > -CONST::PI + CONST::ANG_EPS)
-            {
-                fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
-                    fish.getCenter().y / std::sin(-arg));
-            }
-        }
-
-        for(auto &eater : eaters)
-        {
-            for(size_t i=0; i<CONST::LIDAR_CNT; i++)
-            {
-                auto v = rotate(fish.getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
-                fish.sensory.lidar[i] = std::min(fish.sensory.lidar[i],
-                    disVecCirc(v, eater.getCenter() - fish.getCenter(), eater.getRadius()));
-            }
+            auto v = rotate(fish->getVelocity(), CONST::LIDAR_DIRECTIONS[i]);
+            fish->sensory.lidar[i] = std::min(fish->sensory.lidar[i],
+                disVecCirc(v, eater->getCenter() - fish->getCenter(), eater->getRadius()));
         }
     }
 }
@@ -81,57 +103,65 @@ void GameRunner::clear()
 {
     frameNumber = 0;
     eaters.clear();
-    allTheFish.clear();
+    fishes.clear();
 }
-void GameRunner::createRandomFish(int cnt)
+void GameRunner::newRandomFish(CONST::FISH_STRATEGY stra, int cnt)
 {
-    for(int i=0; i<30; i++)
+    for(int i=0; i<cnt; i++)
     {
-        allTheFish.emplace_back(
-            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)));
+        fishes.emplace_back(createFish(sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)), stra));
+        updateSensoryState(fishes.back());
     }
-    updateSensoryState();
+}
+void GameRunner::newRandomFish(std::unique_ptr<FishStrategy> &stra)
+{
+    fishes.emplace_back(createFish(sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)), stra));
 }
 void GameRunner::step()
 {
     frameNumber++;
     // Update the fish's velocities according to their strategies
-    for(auto &fish : allTheFish)
+    for(auto &fish : fishes)
     {
-        fish.updateVelocity();
+        fish->updateVelocity();
     }
     // If frameNumber satisfies a certain condition, create a new CircularEater
     if(frameNumber % 240 == 0 && eaters.size() <= 20)
     {
-        eaters.emplace_back(CircularEater(
+        eaters.emplace_back(createCircularEater(
             sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
     }
     // the fish move
-    for(auto &fish : allTheFish)
+    for(auto &fish : fishes)
     {
-        fish.step();
+        fish->step();
     }
-    // the eaters enlarge
+    // the eaters moves and enlarges
     for(auto &eater : eaters)
     {
-        eater.step();
+        eater->step();
+        // the eaters bounce on hitting the boundary
+        eater->bounce(exceedBoundary(eater->getCenter()));
     }
     // Remove all the fish been eaten
-    for(auto &fish : allTheFish)
+    for(auto &fish : fishes)
     {
-        if(isEaten(fish.getCenter()) || exceedBoundary(fish.getCenter()))
+        if(isEaten(fish->getCenter()) || exceedBoundary(fish->getCenter()))
         {
-            fish.die(frameNumber);
+            fish->die(frameNumber);
         }
     }
     // Update the sensory states of all the fish
-    updateSensoryState();
+    for(auto &fish : fishes)
+    {
+        updateSensoryState(fish);
+    }
 }
 bool GameRunner::fishAllDead()
 {
-    for(auto &fish : allTheFish)
+    for(auto &fish : fishes)
     {
-        if(!fish.isDead(frameNumber))
+        if(!fish->isDead(frameNumber))
         {
             return false;
         }
@@ -142,56 +172,55 @@ void RenderedGameRunner::render()
 {
     for(auto &eater : eaters)
     {
-        eater.render(window);
+        eater->render(window);
     }
-    for(auto &fish : allTheFish)
+    for(auto &fish : fishes)
     {
-        if(!fish.isDead(frameNumber))
+        if(!fish->isDead(frameNumber))
         {
-            fish.render(window);
+            fish->render(window);
         }
     }
 }
 
-EvolutionGameRunner::EvolutionGameRunner(float width, float height) : GameRunner(width, height) {}
-TrainStats EvolutionGameRunner::train(std::vector<FishStrategy> &strategies)
-{
-    clear();
+HeadlessGameRunner::HeadlessGameRunner(float width, float height) : GameRunner(width, height) {}
+// TrainStats HeadlessGameRunner::train(std::vector<LinearStrategy> &strategies)
+// {
+//     clear();
 
-    for(auto &strategy : strategies)
-    {
-        allTheFish.emplace_back(
-            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)),
-            strategy);
-    }
-    do
-    {
-        step();
-    } while (!fishAllDead());
+//     for(auto &strategy : strategies)
+//     {
+//         newRandomFish(strategy);
+//     }
+//     do
+//     {
+//         step();
+//     } while (!fishAllDead());
     
-    TrainStats output;
+//     TrainStats output;
 
-    std::vector<size_t> lifespan(strategies.size());
-    for(size_t i=0; i<strategies.size(); i++)
-    {
-        lifespan[i] = allTheFish[i].timeOfDeath();
-    }
-    std::partial_sum(lifespan.begin(), lifespan.end(), lifespan.begin());
-    output.meanLifespan = (float)lifespan.back() / strategies.size();
+//     std::vector<size_t> lifespan(strategies.size());
+//     for(size_t i=0; i<strategies.size(); i++)
+//     {
+//         lifespan[i] = fishes[i]->timeOfDeath();
+//     }
+//     output.lifespans.assign(lifespan.begin(), lifespan.end());
+//     std::partial_sum(lifespan.begin(), lifespan.end(), lifespan.begin());
+//     output.meanLifespan = (float)lifespan.back() / strategies.size();
 
-    for(size_t i=0; i<strategies.size(); i++)
-    {
-        auto ind = randint((size_t)1, lifespan.back());
-        auto k = std::lower_bound(lifespan.begin(), lifespan.end(), ind) - lifespan.begin();
-        output.yieldingStrategies.emplace_back(allTheFish[k].strategy);
-    }
+//     for(size_t i=0; i<strategies.size(); i++)
+//     {
+//         auto ind = randint((size_t)1, lifespan.back());
+//         auto k = std::lower_bound(lifespan.begin(), lifespan.end(), ind) - lifespan.begin();
+//         output.yieldingStrategies.emplace_back(fishes[k]->strategy);
+//     }
 
-    // Mutate the strategies
+//     // Mutate the strategies
 
-    for(auto &strategy : output.yieldingStrategies)
-    {
-        strategy.mutate();
-    }
+//     for(auto &strategy : output.yieldingStrategies)
+//     {
+//         strategy.mutate();
+//     }
 
-    return output;
-}
+//     return output;
+// }

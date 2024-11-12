@@ -9,6 +9,8 @@
 
 CircularEater::CircularEater()
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = sf::Vector2f(0.0f, 0.0f);
     radius = 0.0f;
     growthRate = 0.1f;
@@ -16,6 +18,8 @@ CircularEater::CircularEater()
 }
 CircularEater::CircularEater(sf::Vector2f position)
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = position;
     radius = 0.0f;
     growthRate = 0.1f;
@@ -23,6 +27,8 @@ CircularEater::CircularEater(sf::Vector2f position)
 }
 CircularEater::CircularEater(float growth_rate)
 {
+    setRandomVelocity(randBetween(0.8f, 1.2f));
+
     center = sf::Vector2f(0.0f, 0.0f);
     radius = 0.0f;
     growthRate = growth_rate;
@@ -31,6 +37,7 @@ CircularEater::CircularEater(float growth_rate)
 void CircularEater::step()
 {
     radius += growthRate;
+    center += velocity;
 }
 void CircularEater::render(sf::RenderWindow &window)
 {
@@ -47,16 +54,14 @@ float CircularEater::getRadius()
 {
     return radius;
 }
-
-// Fish::Fish(sf::Vector2f coord)
-// {
-//     center = coord;
-//     float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
-//     float arg = randBetween(-CONST::PI, CONST::PI);
-//     velocity = rotate(sf::Vector2f(speed, 0), arg);
-//     deathTime = CONST::FRAME_CNT_INFINITY;
-// }
-Fish::Fish(sf::Vector2f coord, FishStrategy stra) : strategy(stra)
+void CircularEater::bounce(uint8_t ind)
+{
+    if(ind & 1)
+        velocity.x = -velocity.x;
+    if(ind & 2)
+        velocity.y = -velocity.y;
+}
+Fish::Fish(sf::Vector2f coord, std::unique_ptr<FishStrategy> stra) : strategy(std::move(stra))
 {
     center = coord;
     float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
@@ -92,11 +97,11 @@ void Fish::die(size_t frameNumber)
 }
 void Fish::updateVelocity()
 {
-    velocity = strategy.predictVelocity(sensory, velocity);
+    velocity = strategy->predictVelocity(sensory, velocity);
     // velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
 }
 
-FishStrategy::FishStrategy()
+LinearStrategy::LinearStrategy()
 {
     for(auto &x : a)
         x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
@@ -105,7 +110,7 @@ FishStrategy::FishStrategy()
     c = randBetween(-0.1f, 0.1f);
     acceleration_bias = randBetween(-0.1f, 0.1f);
 }
-void FishStrategy::mutate()
+void LinearStrategy::mutate()
 {
     for(auto &x : a)
     {
@@ -118,7 +123,7 @@ void FishStrategy::mutate()
     c = ::mutate(c);
     acceleration_bias = ::mutate(acceleration_bias);
 }
-sf::Vector2f FishStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
+sf::Vector2f LinearStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
 {
     auto speed = std::hypot(velocity.x, velocity.y);
     
@@ -134,4 +139,50 @@ sf::Vector2f FishStrategy::predictVelocity(SensoryState &sense, sf::Vector2f vel
     nv = std::clamp(speed + nv, CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
     
     return rotate((nv / speed) * velocity, no);
+}
+
+sf::Vector2f BaselineStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
+{
+    // The function works only when the fish has a 8-ray lidar
+    static_assert(CONST::LIDAR_CNT == 8);
+
+    auto speed = std::hypot(velocity.x, velocity.y);
+
+    float intended_acceleration = 0.0f;
+    float intended_rotation = 0.0f;
+
+    // If the fish is heading towards an obstacle, slow down
+    if(sense.lidar[3] < 100.0f || sense.lidar[4] < 100.0f)
+    {
+        intended_acceleration = -1.0f * CONST::FISH_SPEED_CHANGE_MAX;
+    }
+    else // Elsewise, go as fast as it could
+    {
+        intended_acceleration = 1.0f * CONST::FISH_SPEED_CHANGE_MAX;
+    }
+
+    // Rotate toward the direction where the obstacle is furthest away
+    float max_weighted_distance = 0.0f;
+    size_t index_of_max_distance = 0;
+    for(size_t i=0; i<8; i++)
+    {
+        float weighted_distance = 0.15 * sense.lidar[(i-1)%8]
+            + 0.7 * sense.lidar[i] + 0.15 * sense.lidar[(i+1)%8];
+        if(weighted_distance > max_weighted_distance)
+        {
+            index_of_max_distance = i;
+            max_weighted_distance = weighted_distance;
+        }
+    }
+    if(index_of_max_distance < 4) // Turn left
+    {
+        intended_rotation = -1.0f * CONST::FISH_DIRRECTION_CHANGE_MAX;
+    }
+    else
+    {
+        intended_rotation = 1.0f * CONST::FISH_DIRRECTION_CHANGE_MAX;
+    }
+
+    auto new_speed = std::clamp(speed + intended_acceleration, CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
+    return rotate((new_speed / speed) * velocity, intended_rotation);
 }

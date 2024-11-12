@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include<vector>
 
 #include "gameRunner.hpp"
@@ -6,15 +7,24 @@
 int main()
 {
     std::vector<FishStrategy> strategies(100);
-    EvolutionGameRunner runner(1280.f, 720.f);
-    // std::freopen("1.txt", "w", stdout);
-    // std::cout << "np.array([";
-    for(int i=1; i<=500; i++)
+    HeadlessGameRunner runner(1280.f, 720.f);
+
+    std::ofstream logfile("./bin/1.txt");
+    logfile << "np.array([";
+
+    for(int i=1; i<=200; i++)
     {
         auto output = runner.train(strategies);
         strategies = output.yieldingStrategies;
-        // std::cout << output.meanLifespan << ",]"[i==500];
+        logfile << "[";
+        for(int j=0; j<100; j++)
+        {
+            logfile << output.lifespans[j] << (j == 99 ? "]" : ",");
+        }
+        logfile << "]";
+        if(i != 200)
+            logfile << ",";
         std::cerr << "Epoch " << i << " finished, " << "meanLifespan = " << output.meanLifespan << std::endl;
     }
-    // std::cout << ")\n";
+    logfile << "])\n";
 }

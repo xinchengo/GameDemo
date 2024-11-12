@@ -1,6 +1,7 @@
 #pragma once
 
 #include<array>
+#include<string>
 
 namespace CONST
 {
@@ -22,5 +23,10 @@ namespace CONST
 
     constexpr float FISH_SPEED_CHANGE_MAX = 0.01f;
     
-    constexpr float FISH_DIRRECTION_CHANGE_MAX = PI / 100;
+    constexpr float FISH_DIRRECTION_CHANGE_MAX = PI / 20;
+
+    enum FISH_STRATEGY
+    {
+        LINEAR, BASELINE
+    };
 }
