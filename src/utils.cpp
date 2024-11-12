@@ -40,6 +40,10 @@ float length(sf::Vector2f a)
 {
     return std::hypot(a.x, a.y);
 }
+float angle_difference(sf::Vector2f a, sf::Vector2f b)
+{
+    return -std::atan2(a.x * b.y - a.y * b.x, a.x * b.x + a.y * b.y);
+}
 
 float disVecCirc(sf::Vector2f a, sf::Vector2f P, float r)
 {

@@ -37,6 +37,7 @@ int main()
         }
 
         window.clear();
+        game.handleUserInput();
         game.step();
         game.render();
         window.display();

@@ -101,88 +101,74 @@ void Fish::updateVelocity()
     // velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
 }
 
-LinearStrategy::LinearStrategy()
+void Snake::extract_segments()
 {
-    for(auto &x : a)
-        x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
-    for(auto &x : b)
-        x = randBetween(-0.1f / CONST::LIDAR_CNT, 0.1f / CONST::LIDAR_CNT);
-    c = randBetween(-0.1f, 0.1f);
-    acceleration_bias = randBetween(-0.1f, 0.1f);
+    seg.clear();
+
+    size_t ind = 0;
+    for (; ind < body.size(); ind += tightness)
+        seg.push_back(body[body.size() - ind - 1]);
 }
-void LinearStrategy::mutate()
+Snake::Snake(int length)
 {
-    for(auto &x : a)
+    velocity = sf::Vector2f(0.f, -CONST::SNAKE_SPEED);
+    for (int i = length - 1; i >= 0; i--)
     {
-        x = ::mutate(x);
+        body.emplace_back(0.f, 0.f + CONST::SNAKE_SPEED * i);
     }
-    for(auto &x : b)
-    {
-        x = ::mutate(x);
-    }
-    c = ::mutate(c);
-    acceleration_bias = ::mutate(acceleration_bias);
+    tightness = 10;
+    queued_length = 0;
 }
-sf::Vector2f LinearStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
+sf::Vector2f Snake::headPos()
 {
-    auto speed = std::hypot(velocity.x, velocity.y);
-    
-    float prod1 = 0, prod2 = 0;
-    for(size_t i=0; i<CONST::LIDAR_CNT; i++)
-        prod1 += a[i] * sense.lidar[i], prod2 += b[i] * sense.lidar[i];
-    prod1 += speed * c;
-    prod1 += acceleration_bias;
-
-    float nv = CONST::FISH_SPEED_CHANGE_MAX * std::tanh(prod1);
-    float no = CONST::FISH_DIRRECTION_CHANGE_MAX * std::tanh(prod2);
-    
-    nv = std::clamp(speed + nv, CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
-    
-    return rotate((nv / speed) * velocity, no);
+    return body.back();
 }
-
-sf::Vector2f BaselineStrategy::predictVelocity(SensoryState &sense, sf::Vector2f velocity)
+void Snake::step()
 {
-    // The function works only when the fish has a 8-ray lidar
-    static_assert(CONST::LIDAR_CNT == 8);
+    body.push_back(body.back() + velocity);
+    if (queued_length == 0)
+        body.erase(body.begin());
+    else
+        queued_length--;
+}
+void Snake::render(sf::RenderWindow& window)
+{
+    extract_segments();
 
-    auto speed = std::hypot(velocity.x, velocity.y);
+    sf::CircleShape shape(CONST::SNAKE_CIRCLE_SIZE);
+    shape.setOrigin(CONST::SNAKE_CIRCLE_SIZE / 2, CONST::SNAKE_CIRCLE_SIZE / 2);
+    shape.setFillColor(sf::Color::Red);
+    shape.setOutlineThickness(2.f);
+    shape.setOutlineColor(sf::Color::White);
 
-    float intended_acceleration = 0.0f;
-    float intended_rotation = 0.0f;
-
-    // If the fish is heading towards an obstacle, slow down
-    if(sense.lidar[3] < 100.0f || sense.lidar[4] < 100.0f)
+    for(auto &it : seg)
     {
-        intended_acceleration = -1.0f * CONST::FISH_SPEED_CHANGE_MAX;
+        shape.setPosition(it);
+        window.draw(shape);
     }
-    else // Elsewise, go as fast as it could
-    {
-        intended_acceleration = 1.0f * CONST::FISH_SPEED_CHANGE_MAX;
-    }
+}
+void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
+{
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
 
-    // Rotate toward the direction where the obstacle is furthest away
-    float max_weighted_distance = 0.0f;
-    size_t index_of_max_distance = 0;
-    for(size_t i=0; i<8; i++)
+    sf::Vector2f id = worldPos - headPos(), rd = velocity;
+
+    float d = angle_difference(id, velocity);
+    if (d > 0.05f)
     {
-        float weighted_distance = 0.15 * sense.lidar[(i-1)%8]
-            + 0.7 * sense.lidar[i] + 0.15 * sense.lidar[(i+1)%8];
-        if(weighted_distance > max_weighted_distance)
-        {
-            index_of_max_distance = i;
-            max_weighted_distance = weighted_distance;
-        }
+        velocity = rotate(velocity, 0.05f);
     }
-    if(index_of_max_distance < 4) // Turn left
+    else if (d < 0.05f)
     {
-        intended_rotation = -1.0f * CONST::FISH_DIRRECTION_CHANGE_MAX;
+        velocity = rotate(velocity, -0.05f);
     }
     else
     {
-        intended_rotation = 1.0f * CONST::FISH_DIRRECTION_CHANGE_MAX;
+        velocity = id * CONST::SNAKE_SPEED / std::hypot(id.x, id.y);
     }
-
-    auto new_speed = std::clamp(speed + intended_acceleration, CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
-    return rotate((new_speed / speed) * velocity, intended_rotation);
+}
+void Snake::lengthen(int count)
+{
+    queued_length += count;
 }

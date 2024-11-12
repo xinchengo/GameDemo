@@ -29,4 +29,10 @@ namespace CONST
     {
         LINEAR, BASELINE
     };
+
+    constexpr float FLOAT_EPS = 1e-6f;
+
+    constexpr float SNAKE_SPEED = 2.0f;
+
+    constexpr float SNAKE_CIRCLE_SIZE = 20.f;
 }

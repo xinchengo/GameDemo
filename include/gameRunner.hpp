@@ -23,6 +23,7 @@ protected:
     float height, width;
     std::vector<std::unique_ptr<CircularEater>> eaters;
     std::vector<std::unique_ptr<Fish>> fishes;
+    Snake snake;
     
     // Fish* createFish(sf::Vector2f, std::unique_ptr<FishStrategy>);
     bool isEaten(sf::Vector2f);
@@ -43,6 +44,7 @@ private:
     sf::RenderWindow &window;
 public:
     void render();
+    void handleUserInput();
     RenderedGameRunner(sf::RenderWindow &);
 };
 
