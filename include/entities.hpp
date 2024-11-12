@@ -6,47 +6,8 @@
 
 #include "constants.hpp"
 #include "utils.hpp"
-
-class HasCenter
-{
-protected:
-    sf::Vector2f center;
-public:
-    void setCenter(sf::Vector2f& C)
-    {
-        center = C;
-    }
-    sf::Vector2f getCenter()
-    {
-        return center;
-    }
-};
-class HasVelocity
-{
-protected:
-    sf::Vector2f velocity;
-public:
-    void setVelocity(sf::Vector2f& C)
-    {
-        velocity = C;
-    }
-    void setRandomVelocity(float x)
-    {
-        float arg = randBetween(-CONST::PI, CONST::PI);
-        velocity = rotate(sf::Vector2f(x, 0.0f), arg);
-    }
-    sf::Vector2f getVelocity()
-    {
-        return velocity;
-    }
-};
-
-
-class SensoryState
-{
-public:
-    std::array<float, CONST::LIDAR_CNT> lidar;
-};
+#include "properties.hpp"
+#include "strategies.hpp"
 
 
 class CircularEater : public HasCenter, public HasVelocity
@@ -65,30 +26,6 @@ public:
     void bounce(uint8_t);
 };
 
-class FishStrategy
-{
-public:
-    virtual sf::Vector2f predictVelocity(SensoryState &, sf::Vector2f) = 0;
-};
-
-class LinearStrategy : public FishStrategy
-{
-private:
-    std::array<float, CONST::LIDAR_CNT> a, b;
-    float c;
-    float acceleration_bias;
-public:
-    LinearStrategy();
-    void mutate();
-    sf::Vector2f predictVelocity(SensoryState &sense, sf::Vector2f velocity);
-};
-
-class BaselineStrategy : public FishStrategy
-{
-private:
-public:
-    sf::Vector2f predictVelocity(SensoryState &, sf::Vector2f);
-};
 
 class Fish : public HasCenter, public HasVelocity
 {
@@ -104,4 +41,34 @@ public:
     bool isDead(size_t);
     size_t timeOfDeath();
     void updateVelocity();
+};
+
+class GreenCircle : public HasCenter, public HasVelocity
+{
+
+};
+
+class Snake : public HasVelocity
+{
+private:
+    /*
+    * `body`: Each snake is stored as a sequence of points.
+    *   On every update, a new element body.back() + velocity
+    *   is added, and the first element will be removed if there is
+    *   no element on queue
+    * `queued_length`: number of elements on queue
+    */
+    std::vector<sf::Vector2f> body, seg;
+    int queued_length;
+    int tightness;
+
+    void extract_segments();
+
+public:
+    Snake(int length);
+    sf::Vector2f headPos();
+    void step();
+    void render(sf::RenderWindow& window);
+    void setVelocityFromMousePos(sf::RenderWindow& window);
+    void lengthen(int count);
 };

@@ -92,7 +92,7 @@ void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
     }
 }
 
-GameRunner::GameRunner(float width, float height) : width(width), height(height)
+GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(200)
 {
     clear();
 }
@@ -136,6 +136,8 @@ void GameRunner::step()
     {
         fish->step();
     }
+    // the snake moves
+    snake.step();
     // the eaters moves and enlarges
     for(auto &eater : eaters)
     {
@@ -168,6 +170,10 @@ bool GameRunner::fishAllDead()
     }
     return true;
 }
+void RenderedGameRunner::handleUserInput()
+{
+    snake.setVelocityFromMousePos(window);
+}
 void RenderedGameRunner::render()
 {
     for(auto &eater : eaters)
@@ -181,6 +187,7 @@ void RenderedGameRunner::render()
             fish->render(window);
         }
     }
+    snake.render(window);
 }
 
 HeadlessGameRunner::HeadlessGameRunner(float width, float height) : GameRunner(width, height) {}

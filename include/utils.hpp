@@ -56,6 +56,11 @@ float cross(sf::Vector2f, sf::Vector2f);
 /// @return The value of a.x * b.x + a.y * b.y
 float dot(sf::Vector2f, sf::Vector2f);
 
+/// @brief Calculate arg(a) - arg(b) normalized to (-pi/2, pi/2)
+/// @return the value of norm(arg(a) - arg(b))
+/// @note cross product computes cos(arg(b) - arg(a)), so a minus sign is added
+float angle_difference(sf::Vector2f, sf::Vector2f);
+
 /// @brief
 /// Calculate the maximum length the vector `a`, starting from (0, 0),
 /// can extend before hitting the circle centering at `P` with radius `r`.
