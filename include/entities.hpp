@@ -8,6 +8,8 @@
 #include "utils.hpp"
 #include "properties.hpp"
 #include "strategies.hpp"
+#include "properties.hpp"
+#include "strategies.hpp"
 
 
 class CircularEater : public HasCenter, public HasVelocity
