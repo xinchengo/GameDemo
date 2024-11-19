@@ -35,4 +35,12 @@ namespace CONST
     constexpr float SNAKE_SPEED = 2.0f;
 
     constexpr float SNAKE_CIRCLE_SIZE = 20.f;
+
+    constexpr float GREEN_CIRCLE_SPEED_MAX = 0.10f;
+
+    constexpr float GREEN_CIRCLE_SPEED_MIN = 1.0f;
+
+    constexpr float GREEN_CIRCLE_RADIUS = 20.0f;
+
+    constexpr float GREEN_CIRCLE_OUTLINE_THICKNESS = 5.0f;
 }

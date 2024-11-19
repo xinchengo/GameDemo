@@ -17,12 +17,14 @@ private:
     Fish* createFish(sf::Vector2f, CONST::FISH_STRATEGY);
     Fish* createFish(sf::Vector2f, std::unique_ptr<FishStrategy> &);
     CircularEater* createCircularEater(sf::Vector2f);
+    GreenCircle* createGreenCircle(sf::Vector2f);
 
 protected:
     size_t frameNumber;
     float height, width;
     std::vector<std::unique_ptr<CircularEater>> eaters;
     std::vector<std::unique_ptr<Fish>> fishes;
+    std::vector<std::unique_ptr<GreenCircle>> greenCircles;
     Snake snake;
     
     // Fish* createFish(sf::Vector2f, std::unique_ptr<FishStrategy>);
@@ -33,6 +35,7 @@ public:
     void clear();
     void newRandomFish(CONST::FISH_STRATEGY, int=1);
     void newRandomFish(std::unique_ptr<FishStrategy> &);
+    void newGreenCircles(int=1);
     GameRunner(float, float);
     void step();
     bool fishAllDead();

@@ -25,7 +25,6 @@ public:
     void step();
     void render(sf::RenderWindow &);
     float getRadius();
-    void bounce(uint8_t);
 };
 
 
@@ -47,7 +46,11 @@ public:
 
 class GreenCircle : public HasCenter, public HasVelocity
 {
-
+private:
+public:
+    GreenCircle(sf::Vector2f position);
+    void step();
+    void render(sf::RenderWindow& window);
 };
 
 class Snake : public HasVelocity

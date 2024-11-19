@@ -59,7 +59,7 @@ float dot(sf::Vector2f, sf::Vector2f);
 /// @brief Calculate arg(a) - arg(b) normalized to (-pi/2, pi/2)
 /// @return the value of norm(arg(a) - arg(b))
 /// @note cross product computes cos(arg(b) - arg(a)), so a minus sign is added
-float angle_difference(sf::Vector2f, sf::Vector2f);
+float angleDifference(sf::Vector2f, sf::Vector2f);
 
 /// @brief
 /// Calculate the maximum length the vector `a`, starting from (0, 0),
@@ -82,4 +82,19 @@ T softmax(T x)
     return 1 / (1 + std::exp(-x));
 }
 
+/// @brief Generate a vector with a length of `length`
+/// but in random direction
+/// @param length the desired length of the vector
+/// @return the generated vector
+sf::Vector2f randVecWithLength(float);
+
+/// @brief Generate a random point in screen with dimension `width` times `height`
+/// @param width the width of the screen
+/// @param height the height of the screen
+/// @return the generated point
+sf::Vector2f randPointInScreen(float, float);
+
+/// @brief Mutate a float `x`, implemetation is user defined
+/// @param x the float to be mutated
+/// @return the float after mutation
 float mutate(float);

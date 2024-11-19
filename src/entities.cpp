@@ -54,19 +54,11 @@ float CircularEater::getRadius()
 {
     return radius;
 }
-void CircularEater::bounce(uint8_t ind)
-{
-    if(ind & 1)
-        velocity.x = -velocity.x;
-    if(ind & 2)
-        velocity.y = -velocity.y;
-}
 Fish::Fish(sf::Vector2f coord, std::unique_ptr<FishStrategy> stra) : strategy(std::move(stra))
 {
     center = coord;
     float speed = randBetween(CONST::FISH_SPEED_MIN, CONST::FISH_SPEED_MAX);
-    float arg = randBetween(-CONST::PI, CONST::PI);
-    velocity = rotate(sf::Vector2f(speed, 0), arg);
+    velocity = randVecWithLength(speed);
     deathTime = CONST::FRAME_CNT_INFINITY;
 }
 void Fish::step()
@@ -99,6 +91,29 @@ void Fish::updateVelocity()
 {
     velocity = strategy->predictVelocity(sensory, velocity);
     // velocity += sf::Vector2f(randBetween(-0.01f, 0.01f), randBetween(-0.01f, 0.01f));
+}
+
+GreenCircle::GreenCircle(sf::Vector2f position)
+{
+    center = position;
+    float speed = randBetween(CONST::GREEN_CIRCLE_SPEED_MIN, CONST::GREEN_CIRCLE_SPEED_MAX);
+    velocity = randVecWithLength(speed);
+}
+
+void GreenCircle::step()
+{
+    center += velocity;
+}
+
+void GreenCircle::render(sf::RenderWindow &window)
+{
+    sf::CircleShape circ(CONST::GREEN_CIRCLE_RADIUS);
+    circ.setOrigin(CONST::GREEN_CIRCLE_RADIUS, CONST::GREEN_CIRCLE_RADIUS);
+    circ.setPosition(center);
+    circ.setOutlineColor(sf::Color::Green);
+    circ.setFillColor(sf::Color::Transparent);
+    circ.setOutlineThickness(CONST::GREEN_CIRCLE_OUTLINE_THICKNESS);
+    window.draw(circ);
 }
 
 void Snake::extract_segments()
@@ -154,7 +169,7 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
 
     sf::Vector2f id = worldPos - headPos(), rd = velocity;
 
-    float d = angle_difference(id, velocity);
+    float d = angleDifference(id, velocity);
     if (d > 0.05f)
     {
         velocity = rotate(velocity, 0.05f);

@@ -40,7 +40,7 @@ float length(sf::Vector2f a)
 {
     return std::hypot(a.x, a.y);
 }
-float angle_difference(sf::Vector2f a, sf::Vector2f b)
+float angleDifference(sf::Vector2f a, sf::Vector2f b)
 {
     return -std::atan2(a.x * b.y - a.y * b.x, a.x * b.x + a.y * b.y);
 }
@@ -56,6 +56,18 @@ sf::Vector2f rotate(sf::Vector2f a, float x)
 {
     return sf::Vector2f(a.x * cos(x) - a.y * sin(x),
         a.x * sin(x) + a.y * cos(x));
+}
+
+sf::Vector2f randVecWithLength(float length)
+{
+    float arg = randBetween(-CONST::PI, CONST::PI);
+    return rotate(sf::Vector2f(length, 0), arg);
+}
+sf::Vector2f randPointInScreen(float width, float height)
+{
+    float x = randBetween(0.0f, width);
+    float y = randBetween(0.0f, height);
+    return sf::Vector2f(x, y);
 }
 
 float mutate(float x)

@@ -48,4 +48,17 @@ public:
     {
         return velocity;
     }
+    /// @brief Make the object bounce when it hits the boundary
+    /// @param ind this parameter determines how the object
+    /// bounces: with a lowest bit of 1, the object bounces
+    /// horizontally; and if the second lowest bit is 1,
+    /// the object bounces vertically.
+    /// @note `ind` should be obtained from `GameRunner::exceedBoundary()`
+    void bounce(uint8_t ind)
+    {
+        if(ind & 1)
+            velocity.x = -velocity.x;
+        if(ind & 2)
+            velocity.y = -velocity.y;
+    }
 };
