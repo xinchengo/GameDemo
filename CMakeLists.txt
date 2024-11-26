@@ -4,17 +4,21 @@ project(CMakeSFMLProject LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
+set(ONLINE https://github.com/SFML/SFML.git)
+set(LOCAL ${CMAKE_SOURCE_DIR}/SFML)
+
 include(FetchContent)
 FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG 2.6.x
-    GIT_SHALLOW ON
+    # GIT_REPOSITORY ${ONLINE}
+    # GIT_TAG 2.6.x
+    # GIT_SHALLOW ON
+    SOURCE_DIR ${LOCAL}
     EXCLUDE_FROM_ALL
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
-set(EXCLUDED_FILE "src/fishTrainer.cpp")  
+set(EXCLUDED_FILE ${CMAKE_SOURCE_DIR}/src/fishTrainer.cpp)  
 list(REMOVE_ITEM SOURCES ${EXCLUDED_FILE})
 
 include_directories(include)
