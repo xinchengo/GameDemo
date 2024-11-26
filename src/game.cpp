@@ -17,10 +17,15 @@ int main()
 
     bool paused = false;
 
-    RenderedGameRunner game(window);
-    game.newRandomFish(CONST::FISH_STRATEGY::LINEAR, 30);
-    game.newRandomFish(CONST::FISH_STRATEGY::BASELINE, 30);
-    game.newGreenCircles(10);
+    SceneManager sceneManager(window);
+
+    auto game = std::make_shared<RenderedGameRunner>(window);
+    game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 30);
+    game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 30);
+    game->newGreenCircles(10);
+
+    sceneManager.setScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
+
 
     while (window.isOpen())
     {
@@ -38,9 +43,7 @@ int main()
         }
 
         window.clear();
-        game.handleUserInput();
-        game.step();
-        game.render();
+        sceneManager.update();
         window.display();
     }
 

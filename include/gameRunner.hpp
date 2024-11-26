@@ -9,6 +9,43 @@
 #include "utils.hpp"
 #include "constants.hpp"
 
+class Scene  
+{  
+public:  
+    virtual ~Scene() = default;  
+
+    // Update the scene - called in the main loop  
+    virtual void step() = 0;  
+
+    // Render the scene  
+    virtual void render() = 0;  
+
+    // Handle user input  
+    virtual void handleUserInput() = 0;  
+};
+
+class SceneManager
+{  
+private:  
+    std::shared_ptr<Scene> currentScene;  
+    sf::RenderWindow &window;  
+
+public:  
+    SceneManager(sf::RenderWindow &window) : window(window) {}  
+
+    void setScene(std::shared_ptr<Scene> scene) {  
+        currentScene = std::move(scene);
+    }  
+
+    void update() {  
+        if (currentScene) {  
+            currentScene->handleUserInput();  
+            currentScene->step();  
+            currentScene->render();  
+        }  
+    }  
+};
+
 class GameRunner
 {
 private:
@@ -41,11 +78,12 @@ public:
     bool fishAllDead();
 };
 
-class RenderedGameRunner : public GameRunner
+class RenderedGameRunner : public GameRunner, public Scene
 {
 private:
     sf::RenderWindow &window;
 public:
+    void step() override { GameRunner::step(); }
     void render();
     void handleUserInput();
     RenderedGameRunner(sf::RenderWindow &);
