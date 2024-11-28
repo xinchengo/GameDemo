@@ -1,6 +1,6 @@
 #pragma once
 
-#include "constants.hpp"
+#include "config.hpp"
 #include "utils.hpp"
 
 /// @brief Property of an object for having a center

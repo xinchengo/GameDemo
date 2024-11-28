@@ -4,9 +4,9 @@
 #include<random>
 #include<cmath>
 
-#include "entities.hpp"
-#include "gameRunner.hpp"
-#include "utils.hpp"
+#include "game/SceneManager.hpp"
+#include "game/scenes/RenderedGameRunner.hpp"
+#include "utilities/config.hpp"
 
 
 int main()

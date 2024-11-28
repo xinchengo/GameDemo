@@ -2,8 +2,8 @@
 
 #include<array>
 
-#include "constants.hpp"
-#include "utils.hpp"
+#include "utilities/utils.hpp"
+#include "utilities/config.hpp"
 
 class SensoryState
 {

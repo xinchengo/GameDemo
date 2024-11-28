@@ -1,11 +1,8 @@
-#include <cfloat>
-#include <algorithm>
-#include <numeric>
 #include <memory>
 
-#include "gameRunner.hpp"
-#include "utils.hpp"
-#include "constants.hpp"
+#include "GameRunner.hpp"
+#include "utilities/utils.hpp"
+#include "utilities/config.hpp"
 
 Fish* GameRunner::createFish(sf::Vector2f pos, CONST::FISH_STRATEGY stra)
 {
@@ -96,9 +93,7 @@ GameRunner::GameRunner(float width, float height) : width(width), height(height)
 {
     clear();
 }
-RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
-    GameRunner((float)window.getSize().x, (float)window.getSize().y),
-    window(window) {}
+
 void GameRunner::clear()
 {
     frameNumber = 0;
@@ -181,29 +176,6 @@ bool GameRunner::fishAllDead()
         }
     }
     return true;
-}
-void RenderedGameRunner::handleUserInput()
-{
-    snake.setVelocityFromMousePos(window);
-}
-void RenderedGameRunner::render()
-{
-    for(auto &eater : eaters)
-    {
-        eater->render(window);
-    }
-    for(auto &fish : fishes)
-    {
-        if(!fish->isDead(frameNumber))
-        {
-            fish->render(window);
-        }
-    }
-    for(auto &circ : greenCircles)
-    {
-        circ->render(window);
-    }
-    snake.render(window);
 }
 
 HeadlessGameRunner::HeadlessGameRunner(float width, float height) : GameRunner(width, height) {}

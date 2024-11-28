@@ -2,7 +2,7 @@
 #include<cmath>
 
 #include "utils.hpp"
-#include "constants.hpp"
+#include "config.hpp"
 
 std::mt19937 gen;
 

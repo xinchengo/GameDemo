@@ -18,10 +18,10 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 file(GLOB_RECURSE SOURCES src/*.cpp)
-set(EXCLUDED_FILE ${CMAKE_SOURCE_DIR}/src/fishTrainer.cpp)  
-list(REMOVE_ITEM SOURCES ${EXCLUDED_FILE})
+# set(EXCLUDED_FILE ${CMAKE_SOURCE_DIR}/src/fishTrainer.cpp)  
+# list(REMOVE_ITEM SOURCES ${EXCLUDED_FILE})
 
-include_directories(include)
+include_directories(src)
 add_executable(game ${SOURCES})
 target_link_libraries(game PRIVATE sfml-graphics)
 target_compile_features(game PRIVATE cxx_std_17)
