@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
 #include "utilities/utils.hpp"
+#include "utilities/AssetManager.hpp"
 
 void Snake::extract_segments()
 {
@@ -37,12 +38,12 @@ void Snake::step()
 void Snake::render(sf::RenderWindow& window)
 {
     extract_segments();
-
-    sf::CircleShape shape(CONST::SNAKE_CIRCLE_SIZE);
-    shape.setOrigin(CONST::SNAKE_CIRCLE_SIZE / 2, CONST::SNAKE_CIRCLE_SIZE / 2);
-    shape.setFillColor(sf::Color::Red);
-    shape.setOutlineThickness(2.f);
-    shape.setOutlineColor(sf::Color::White);
+    
+    auto& assetManager = AssetManager::getInstance();
+    
+    sf::Sprite shape;
+    shape.setTexture(assetManager.texture.get("snakeBody"), true);
+    shape.setOrigin(shape.getScale().x / 2, shape.getScale().y / 2);
 
     for(auto &it : seg)
     {

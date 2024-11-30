@@ -7,10 +7,19 @@
 #include "game/SceneManager.hpp"
 #include "game/scenes/RenderedGameRunner.hpp"
 #include "utilities/config.hpp"
+#include "utilities/AssetManager.hpp"
 
+void load_assets();
+void load_assets()
+{
+    auto& assetManager = AssetManager::getInstance();
+    assetManager.texture.load("snakeBody", "./assets/images/snakeBody.png");
+}
 
 int main()
 {
+    load_assets();
+
     sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
 
     window.setVerticalSyncEnabled(true);

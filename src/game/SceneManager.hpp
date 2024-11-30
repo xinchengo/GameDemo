@@ -39,7 +39,7 @@ public:
 
 class SceneManager
 {  
-private:  
+private:
     sf::RenderWindow &window;  
     std::stack<std::shared_ptr<Scene>> scenes;
 
