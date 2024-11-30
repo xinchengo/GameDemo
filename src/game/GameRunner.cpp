@@ -1,11 +1,8 @@
-#include <cfloat>
-#include <algorithm>
-#include <numeric>
 #include <memory>
 
-#include "gameRunner.hpp"
-#include "utils.hpp"
-#include "constants.hpp"
+#include "GameRunner.hpp"
+#include "utilities/utils.hpp"
+#include "utilities/config.hpp"
 
 Fish* GameRunner::createFish(sf::Vector2f pos, CONST::FISH_STRATEGY stra)
 {
@@ -27,10 +24,10 @@ CircularEater* GameRunner::createCircularEater(sf::Vector2f pos)
 {
     return new CircularEater(pos);
 }
-// Fish* createFish(sf::Vector2f pos, std::unique_ptr<FishStrategy> stra)
-// {
-//     return new Fish(pos, std::move(stra));
-// }
+GreenCircle* GameRunner::createGreenCircle(sf::Vector2f pos)
+{
+    return new GreenCircle(pos);
+}
 bool GameRunner::isEaten(sf::Vector2f pos)
 {
     for(auto &eater : eaters)
@@ -92,13 +89,11 @@ void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
     }
 }
 
-GameRunner::GameRunner(float width, float height) : width(width), height(height)
+GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(200)
 {
     clear();
 }
-RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
-    GameRunner((float)window.getSize().x, (float)window.getSize().y),
-    window(window) {}
+
 void GameRunner::clear()
 {
     frameNumber = 0;
@@ -109,13 +104,20 @@ void GameRunner::newRandomFish(CONST::FISH_STRATEGY stra, int cnt)
 {
     for(int i=0; i<cnt; i++)
     {
-        fishes.emplace_back(createFish(sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)), stra));
+        fishes.emplace_back(createFish(randPointInScreen(width, height), stra));
         updateSensoryState(fishes.back());
     }
 }
 void GameRunner::newRandomFish(std::unique_ptr<FishStrategy> &stra)
 {
-    fishes.emplace_back(createFish(sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height)), stra));
+    fishes.emplace_back(createFish(randPointInScreen(width, height), stra));
+}
+void GameRunner::newGreenCircles(int cnt)
+{
+    for(int i=0; i<cnt; i++)
+    {
+        greenCircles.emplace_back(createGreenCircle(randPointInScreen(width, height)));
+    }
 }
 void GameRunner::step()
 {
@@ -128,20 +130,27 @@ void GameRunner::step()
     // If frameNumber satisfies a certain condition, create a new CircularEater
     if(frameNumber % 240 == 0 && eaters.size() <= 20)
     {
-        eaters.emplace_back(createCircularEater(
-            sf::Vector2f(randBetween(0.0f, width), randBetween(0.0f, height))));
+        eaters.emplace_back(createCircularEater(randPointInScreen(width, height)));
     }
     // the fish move
     for(auto &fish : fishes)
     {
         fish->step();
     }
+    // the snake moves
+    snake.step();
     // the eaters moves and enlarges
     for(auto &eater : eaters)
     {
         eater->step();
         // the eaters bounce on hitting the boundary
         eater->bounce(exceedBoundary(eater->getCenter()));
+    }
+    // The greenCircle moves
+    for(auto &circ : greenCircles)
+    {
+        circ->step();
+        circ->bounce(exceedBoundary(circ->getCenter()));
     }
     // Remove all the fish been eaten
     for(auto &fish : fishes)
@@ -167,20 +176,6 @@ bool GameRunner::fishAllDead()
         }
     }
     return true;
-}
-void RenderedGameRunner::render()
-{
-    for(auto &eater : eaters)
-    {
-        eater->render(window);
-    }
-    for(auto &fish : fishes)
-    {
-        if(!fish->isDead(frameNumber))
-        {
-            fish->render(window);
-        }
-    }
 }
 
 HeadlessGameRunner::HeadlessGameRunner(float width, float height) : GameRunner(width, height) {}
