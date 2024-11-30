@@ -6,6 +6,7 @@
 
 #include "game/SceneManager.hpp"
 #include "game/scenes/RenderedGameRunner.hpp"
+#include "game/scenes/StartScene.hpp"
 #include "utilities/config.hpp"
 #include "utilities/AssetManager.hpp"
 
@@ -13,7 +14,13 @@ void load_assets();
 void load_assets()
 {
     auto& assetManager = AssetManager::getInstance();
-    assetManager.texture.load("snakeBody", "./assets/images/snakeBody.png");
+
+    sf::Image images;
+    images.loadFromFile("./assets/images/images.png");
+
+    assetManager.texture.loadFromImage("snakeBody", images, sf::IntRect(0, 0, 48, 48));
+    assetManager.texture.loadFromImage("greenCircle", images, sf::IntRect(72, 0, 52, 52));
+    assetManager.texture.loadFromImage("gameTitle", images, sf::IntRect(144, 0, 576, 96));
 }
 
 int main()
@@ -33,7 +40,11 @@ int main()
     game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 30);
     game->newGreenCircles(10);
 
-    sceneManager.setScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
+    auto start = std::make_shared<StartScene>(window);
+    start->bindGameScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
+
+    // sceneManager.setScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
+    sceneManager.setScene(std::static_pointer_cast<Scene, StartScene>(start));
 
 
     while (window.isOpen())

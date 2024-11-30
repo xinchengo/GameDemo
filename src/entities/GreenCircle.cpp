@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
 #include "utilities/utils.hpp"
+#include "utilities/AssetManager.hpp"
 
 GreenCircle::GreenCircle(sf::Vector2f position)
 {
@@ -18,11 +19,12 @@ void GreenCircle::step()
 
 void GreenCircle::render(sf::RenderWindow &window)
 {
-    sf::CircleShape circ(CONST::GREEN_CIRCLE_RADIUS);
-    circ.setOrigin(CONST::GREEN_CIRCLE_RADIUS, CONST::GREEN_CIRCLE_RADIUS);
-    circ.setPosition(center);
-    circ.setOutlineColor(sf::Color::Green);
-    circ.setFillColor(sf::Color::Transparent);
-    circ.setOutlineThickness(CONST::GREEN_CIRCLE_OUTLINE_THICKNESS);
-    window.draw(circ);
+    auto& assetManager = AssetManager::getInstance();
+    
+    sf::Sprite shape;
+    shape.setTexture(assetManager.texture.get("greenCircle"), true);
+    shape.setOrigin(shape.getGlobalBounds().getSize() * 0.5f);
+    shape.setPosition(center);
+
+    window.draw(shape);
 }

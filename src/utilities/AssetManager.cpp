@@ -1,9 +1,21 @@
 #include "AssetManager.hpp"
 
-bool TextureManager::load(const std::string &name, const std::string &filePath)
+bool TextureManager::loadFromFile(const std::string &name, const std::string &filePath)
 {
     sf::Texture texture;  
     if(texture.loadFromFile(filePath))
+    {  
+        textures[name] = std::move(texture);  // Store in map
+        return true;  
+    }
+    else
+        return false; 
+}
+
+bool TextureManager::loadFromImage(const std::string &name, const sf::Image &image, sf::IntRect area)
+{
+    sf::Texture texture;  
+    if(texture.loadFromImage(image, area))
     {  
         textures[name] = std::move(texture);  // Store in map
         return true;  
@@ -17,7 +29,7 @@ sf::Texture &TextureManager::get(const std::string &name)
     return textures.at(name);
 }
 
-bool FontManager::load(const std::string &name, const std::string &filePath)
+bool FontManager::loadFromFile(const std::string &name, const std::string &filePath)
 {
     sf::Font font;  
     if(font.loadFromFile(filePath))

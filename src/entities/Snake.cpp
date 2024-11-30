@@ -38,12 +38,12 @@ void Snake::step()
 void Snake::render(sf::RenderWindow& window)
 {
     extract_segments();
-    
+
     auto& assetManager = AssetManager::getInstance();
     
     sf::Sprite shape;
     shape.setTexture(assetManager.texture.get("snakeBody"), true);
-    shape.setOrigin(shape.getScale().x / 2, shape.getScale().y / 2);
+    shape.setOrigin(shape.getGlobalBounds().getSize() * 0.5f);
 
     for(auto &it : seg)
     {

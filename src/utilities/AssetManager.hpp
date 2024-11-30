@@ -22,7 +22,15 @@ public:
      * @param filePath Path to the texture file.
      * @return a boolean, indicating whether succeeded or not
      */
-    bool load(const std::string& name, const std::string& filePath);
+    bool loadFromFile(const std::string& name, const std::string& filePath);
+    /**
+     * @brief Loads a texture from image and stores it.
+     * @param name The unique name to identify the texture.
+     * @param image The image
+     * @param area Area to select from the image
+     * @return a boolean, indicating whether succeeded or not
+     */
+    bool loadFromImage(const std::string& name, const sf::Image& image, sf::IntRect area);
 
     /**  
      * @brief Retrieves a texture by its name.  
@@ -48,7 +56,7 @@ public:
      * @param filePath Path to the font file.  
      * @return a boolean, indicating whether succeeded or not
      */  
-    bool load(const std::string& name, const std::string& filePath);
+    bool loadFromFile(const std::string& name, const std::string& filePath);
 
     /**  
      * @brief Retrieves a font by its name.  

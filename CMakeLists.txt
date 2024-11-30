@@ -39,7 +39,7 @@ set(IMAGE_DIR ${ASSET_DIR}/images)
 file(GLOB_RECURSE IMAGES "${IMAGE_DIR}/*") 
 add_custom_command(TARGET game POST_BUILD  
     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:game>/assets/images  
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${IMAGES} $<TARGET_FILE_DIR:game>/assets/images
+    COMMAND ${CMAKE_COMMAND} -E copy ${IMAGES} $<TARGET_FILE_DIR:game>/assets/images
 )
 
 if(WIN32)
