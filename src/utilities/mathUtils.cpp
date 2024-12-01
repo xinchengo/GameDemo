@@ -1,7 +1,7 @@
 #include<cfloat>
 #include<cmath>
 
-#include "utils.hpp"
+#include "mathUtils.hpp"
 #include "config.hpp"
 
 std::mt19937 gen;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "utils.hpp"
+#include "mathUtils.hpp"
 
 /// @brief Property of an object for having a center
 class HasCenter

@@ -1,7 +1,7 @@
 #include <memory>
 
 #include "GameRunner.hpp"
-#include "utilities/utils.hpp"
+#include "..\utilities\mathUtils.hpp"
 #include "utilities/config.hpp"
 
 Fish* GameRunner::createFish(sf::Vector2f pos, CONST::FISH_STRATEGY stra)

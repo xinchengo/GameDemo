@@ -1,0 +1,49 @@
+{
+  "textures": {
+    "images/images.png": {
+      "snakeBody": {
+        "x": 0,
+        "y": 0,
+        "width": 48,
+        "height": 48
+      },
+      "greenCircle": {
+        "x": 72,
+        "y": 0,
+        "width": 52,
+        "height": 52
+      },
+      "gameTitle": {
+        "x": 144,
+        "y": 0,
+        "width": 864,
+        "height": 144
+      },
+      "startGame": {
+        "x": 144,
+        "y": 144,
+        "width": 432,
+        "height": 108
+      },
+      "gameSettings": {
+        "x": 144,
+        "y": 252,
+        "width": 432,
+        "height": 108
+      },
+      "exitGame": {
+        "x": 144,
+        "y": 360,
+        "width": 432,
+        "height": 108
+      },
+      "aboutPage": {
+        "x": 144,
+        "y": 468,
+        "width": 216,
+        "height": 108
+      }
+    }
+  },
+  "fonts": {}
+}

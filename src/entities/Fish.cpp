@@ -2,7 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
-#include "utilities/utils.hpp"
+#include "..\utilities\mathUtils.hpp"
 
 Fish::Fish(sf::Vector2f coord, std::unique_ptr<FishStrategy> stra) : strategy(std::move(stra))
 {

@@ -1,8 +1,10 @@
 #include<SFML/Graphics.hpp>
 #include<iostream>
+#include<fstream>
 #include<vector>
 #include<random>
 #include<cmath>
+#include<nlohmann/json.hpp>
 
 #include "game/SceneManager.hpp"
 #include "game/scenes/RenderedGameRunner.hpp"
@@ -15,12 +17,30 @@ void load_assets()
 {
     auto& assetManager = AssetManager::getInstance();
 
-    sf::Image images;
-    images.loadFromFile("./assets/images/images.png");
+    std::ifstream assetsList("./assets/assets.json");
+    auto data = nlohmann::json::parse(assetsList);
 
-    assetManager.texture.loadFromImage("snakeBody", images, sf::IntRect(0, 0, 48, 48));
-    assetManager.texture.loadFromImage("greenCircle", images, sf::IntRect(72, 0, 52, 52));
-    assetManager.texture.loadFromImage("gameTitle", images, sf::IntRect(144, 0, 576, 96));
+    // import textures
+    for(auto &image : data["textures"].items())
+    {
+        std::string imagePath = image.key();
+        auto& imageData = image.value();
+
+        sf::Image imageFile;
+        imageFile.loadFromFile("./assets/" + imagePath);
+
+        for(auto &texture : imageData.items()) {
+            std::string textureName = texture.key();
+            auto &textureDetails = texture.value();
+
+            int x = textureDetails["x"];
+            int y = textureDetails["y"];
+            int width = textureDetails["width"];
+            int height = textureDetails["height"];
+
+            assetManager.texture.loadFromImage(textureName, imageFile, sf::IntRect(x, y, width, height));
+        }
+    }
 }
 
 int main()

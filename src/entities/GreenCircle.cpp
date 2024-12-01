@@ -2,7 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
-#include "utilities/utils.hpp"
+#include "..\utilities\mathUtils.hpp"
 #include "utilities/AssetManager.hpp"
 
 GreenCircle::GreenCircle(sf::Vector2f position)

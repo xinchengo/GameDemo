@@ -18,6 +18,10 @@ void StartScene::bindAboutScene(std::shared_ptr<Scene> scene)
 void StartScene::render()
 {
     window.draw(title);
+    window.draw(startButton);
+    window.draw(settingsButton);
+    window.draw(exitButton);
+    window.draw(aboutButton);
 }
 
 void StartScene::step()
@@ -26,4 +30,5 @@ void StartScene::step()
 
 void StartScene::handleUserInput()
 {
+    
 }

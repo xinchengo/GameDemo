@@ -4,42 +4,51 @@ project(CMakeSFMLProject LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-# Importing the SFML library
-
-set(ONLINE https://github.com/SFML/SFML.git)
-set(LOCAL ${CMAKE_SOURCE_DIR}/SFML)
-
-include(FetchContent)
-FetchContent_Declare(SFML
-    # GIT_REPOSITORY ${ONLINE}
-    # GIT_TAG 2.6.x
-    # GIT_SHALLOW ON
-    SOURCE_DIR ${LOCAL}
-    EXCLUDE_FROM_ALL
-    SYSTEM)
-FetchContent_MakeAvailable(SFML)
 
 # Configuring the source files to generate the executable
 
-file(GLOB_RECURSE SOURCES src/*.cpp)
-# set(EXCLUDED_FILE ${CMAKE_SOURCE_DIR}/src/fishTrainer.cpp)  
-# list(REMOVE_ITEM SOURCES ${EXCLUDED_FILE})
-
 include_directories(src)
+file(GLOB_RECURSE SOURCES src/*.cpp)
 add_executable(game ${SOURCES})
-target_link_libraries(game PRIVATE sfml-graphics)
 target_compile_features(game PRIVATE cxx_std_17)
+
+include(FetchContent)
+
+# Use FetchContent to import the SFML library
+FetchContent_Declare(
+    SFML
+    # GIT_REPOSITORY https://github.com/SFML/SFML.git
+    # GIT_TAG 2.6.x
+    # GIT_SHALLOW ON
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/SFML
+    EXCLUDE_FROM_ALL
+    SYSTEM
+)
+FetchContent_MakeAvailable(SFML)
+target_link_libraries(game PRIVATE sfml-graphics)
+
+# Use FetchContent to import the JSON library
+FetchContent_Declare(
+    json
+    # GIT_REPOSITORY https://github.com/nlohmann/json.git
+    # GIT_TAG 3.11.x
+    # GIT_SHALLOW ON
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/json
+    EXCLUDE_FROM_ALL
+)
+FetchContent_MakeAvailable(json)
+target_link_libraries(game PRIVATE nlohmann_json::nlohmann_json)
+
 
 # Specify the asset directories
 set(ASSET_DIR ${CMAKE_SOURCE_DIR}/assets)
-set(IMAGE_DIR ${ASSET_DIR}/images)
 
 # Copy assets to the build directory
-
-file(GLOB_RECURSE IMAGES "${IMAGE_DIR}/*") 
-add_custom_command(TARGET game POST_BUILD  
-    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:game>/assets/images  
-    COMMAND ${CMAKE_COMMAND} -E copy ${IMAGES} $<TARGET_FILE_DIR:game>/assets/images
+add_custom_command(
+    TARGET game PRE_BUILD 
+    COMMENT "Copy Assets"
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:game>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different ${ASSET_DIR} $<TARGET_FILE_DIR:game>/assets
 )
 
 if(WIN32)
