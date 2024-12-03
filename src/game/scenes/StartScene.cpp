@@ -24,6 +24,30 @@ void StartScene::render()
     window.draw(aboutButton);
 }
 
+void StartScene::eventManager()
+{
+    sf::Event event;
+    sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
+    while(window.pollEvent(event));
+    {
+        switch(event.type)
+        {
+        case sf::Event::Closed:
+            window.close();
+            break;
+        case sf::Event::MouseButtonPressed:
+            if(startButton.getGlobalBounds().contains(worldPos))
+            {
+                pushScene(gameScene);
+            }
+            break;
+        default:
+            break;    
+        }
+    }
+}
+
 void StartScene::step()
 {
 }

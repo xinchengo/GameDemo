@@ -20,7 +20,6 @@ private:
     sf::Sprite exitButton;
     sf::Sprite aboutButton;
     
-    
 public:
 
     StartScene(sf::RenderWindow &window) : window(window)
@@ -52,5 +51,6 @@ public:
 
     void render() override;
     void step() override;
+    void eventManager() override;
     void handleUserInput() override;
 };

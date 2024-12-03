@@ -12,6 +12,8 @@ private:
     sf::RenderWindow &window;
 public:
     void step() override { GameRunner::step(); }
+    
+    void eventManager();
     void render();
     void handleUserInput();
     RenderedGameRunner(sf::RenderWindow &);

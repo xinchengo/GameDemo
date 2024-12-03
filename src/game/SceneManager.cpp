@@ -13,7 +13,9 @@ void SceneManager::setScene(std::shared_ptr<Scene> scene)
 void SceneManager::update()
 {
     if (!scenes.empty()) 
-    {  
+    {
+        currentScene()->eventManager();
+
         while(currentScene()->events.empty() == false)
         {
             auto &event = currentScene()->events.front();

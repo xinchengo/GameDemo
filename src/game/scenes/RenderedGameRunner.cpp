@@ -8,6 +8,21 @@ void RenderedGameRunner::handleUserInput()
 {
     snake.setVelocityFromMousePos(window);
 }
+void RenderedGameRunner::eventManager()
+{
+    sf::Event event;
+    while(window.pollEvent(event));
+    {
+        switch(event.type)
+        {
+        case sf::Event::Closed:
+            window.close();
+            break;
+        default:
+            break;    
+        }
+    }
+}
 void RenderedGameRunner::render()
 {
     for(auto &eater : eaters)
