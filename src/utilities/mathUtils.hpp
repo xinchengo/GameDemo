@@ -74,6 +74,29 @@ float angleDifference(sf::Vector2f, sf::Vector2f);
 /// 
 /// @note The function assumes that point (0, 0) is not within 
 float disVecCirc(sf::Vector2f, sf::Vector2f, float);
+
+/**
+ * @brief Utility function to calculate the orientation of the triplet (p, q, r)
+ * 
+ * @return 0 (p, q, r) are collinear
+ * @return 1 (p, q, r) are in clockwise order
+ * @return 2 (p, q, r) are in counter-clockwise order
+ */
+int orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r);
+/**
+ * @brief Helper function for `intersect()` to check if point q lies on segment pr
+ * 
+ * @return whether point q lies on segment pr
+ * @warning DO NOT CALL THIS FUNCTION!
+ */
+bool helper_onSegment(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r);
+
+/**
+ * @brief Calculate whether the segments ab and cd intersects.
+ * 
+ * @return Whether the segments ab and cd intersects.
+ */
+bool doIntersect(sf::Vector2f p1, sf::Vector2f q1, sf::Vector2f p2, sf::Vector2f q2);
 sf::Vector2f rotate(sf::Vector2f, float);
 /// @brief Softmax function for x
 template<typename T>

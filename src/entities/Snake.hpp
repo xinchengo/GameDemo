@@ -20,6 +20,22 @@ private:
 
     void extract_segments();
 
+     /**
+     * @brief Helper function to determine whether the snake is in eating
+     * state or not.
+     * 
+     * @return Whether the segment between the head and tail of the snake
+     * intersects with other body parts
+     */
+    bool intersect();
+    /**
+     * @brief Return the length of the snake (`body.size() * tightness`)
+     * 
+     * @return the length of the snake
+     */
+    float snakeLength();
+    bool isInPredationMode();
+
 public:
     Snake(int length);
     sf::Vector2f headPos();
