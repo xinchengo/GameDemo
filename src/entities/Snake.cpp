@@ -16,9 +16,9 @@ void Snake::extract_segments()
 bool Snake::intersect()
 {
     size_t ind = 1;
-    for(; ind < body.size() - 2; ind++)
+    for(; ind < seg.size() - 2; ind++)
     {
-        if(doIntersect(body[ind], body[ind+1], body.front(), body.back()))
+        if(doIntersect(seg[ind], seg[ind+1], seg.front(), seg.back()))
         {
             return true;
         }
@@ -27,9 +27,9 @@ bool Snake::intersect()
 }
 float Snake::snakeLength()
 {
-    return body.size() * tightness;
+    return seg.size() * tightness * CONST::SNAKE_SPEED;
 }
-bool Snake::isInPredationMode()
+bool Snake::isInPredatorMode()
 {
     if(Snake::intersect())
         return false;
@@ -65,6 +65,16 @@ void Snake::render(sf::RenderWindow& window)
 {
     extract_segments();
 
+    if(isInPredatorMode())
+    {
+        sf::RectangleShape line;
+        line.setFillColor(sf::Color::White);
+        line.setPosition(seg.front());
+        line.setSize(sf::Vector2f(dis2(seg.front(), seg.back()), 3.0f));
+        line.setRotation(std::atan2((seg.back()-seg.front()).y, (seg.back()-seg.front()).x)/CONST::PI*180);
+        window.draw(line);
+    }
+
     auto& assetManager = AssetManager::getInstance();
     
     sf::Sprite shape;
@@ -75,16 +85,6 @@ void Snake::render(sf::RenderWindow& window)
     {
         shape.setPosition(it);
         window.draw(shape);
-    }
-
-    if(isInPredationMode())
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::White);
-        line.setPosition(body.front());
-        line.setSize(sf::Vector2f(dis2(body.front(), body.back()), 3.0f));
-        line.setRotation(std::atan2((body.back()-body.front()).y, (body.back()-body.front()).x)/CONST::PI*180);
-        window.draw(line);
     }
 }
 void Snake::setVelocityFromMousePos(sf::RenderWindow& window)

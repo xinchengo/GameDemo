@@ -24,7 +24,7 @@ private:
      * @brief Helper function to determine whether the snake is in eating
      * state or not.
      * 
-     * @return Whether the segment between the head and tail of the snake
+     * @return Whether the segment between `seg.front()` and `seg.back()`
      * intersects with other body parts
      */
     bool intersect();
@@ -34,7 +34,7 @@ private:
      * @return the length of the snake
      */
     float snakeLength();
-    bool isInPredationMode();
+    bool isInPredatorMode();
 
 public:
     Snake(int length);
