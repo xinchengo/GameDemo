@@ -65,8 +65,8 @@ sf::Vector2f BaselineStrategy::predictVelocity(SensoryState &sense, sf::Vector2f
     size_t index_of_max_distance = 0;
     for(size_t i=0; i<8; i++)
     {
-        float weighted_distance = 0.15 * sense.lidar[(i-1)%8]
-            + 0.7 * sense.lidar[i] + 0.15 * sense.lidar[(i+1)%8];
+        float weighted_distance = 0.15f * sense.lidar[(i-1)%8]
+            + 0.7f * sense.lidar[i] + 0.15f * sense.lidar[(i+1)%8];
         if(weighted_distance > max_weighted_distance)
         {
             index_of_max_distance = i;

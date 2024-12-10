@@ -50,7 +50,7 @@ float disVecCirc(sf::Vector2f a, sf::Vector2f P, float r)
     if(dot(a, P) <= 0.0f || std::abs(cross(a, P) / length(a)) >= r)
         return INFINITY;
     else
-        return (dot(a, P) / length(a)) - sqrt(r * r - std::pow(cross(a, P) / length(a), 2));
+        return (dot(a, P) / length(a)) - std::sqrt(r * r - (float) std::pow(cross(a, P) / length(a), 2));
 }
 int orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r)
 {
