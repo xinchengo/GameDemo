@@ -5,7 +5,7 @@
 #include "..\utilities\mathUtils.hpp"
 #include "utilities/AssetManager.hpp"
 
-void Snake::extract_segments()
+void Snake::extractSegments()
 {
     seg.clear();
 
@@ -13,22 +13,26 @@ void Snake::extract_segments()
     for (; ind < body.size(); ind += tightness)
         seg.push_back(body[body.size() - ind - 1]);
 }
-void Snake::extract_enclosed_parts()
+void Snake::extractEnclosedParts()
 {
     using namespace Clipper2Lib;
     
     PathD snakePath;
     for(auto &i : seg)
-        snakePath.emplace_back(i.x, i.y);
+        snakePath.emplace_back(i.x, i.y); // convert seg to PathD
     
     ClipperD clipper;
+    // the path is treated as a polygon, with the head and tail connected
     clipper.AddSubject({snakePath});
     clipper.PreserveCollinear(false);
+    // extract the enclosed (NonZero) parts of the path (treated as a polygon) to `polygons`
     clipper.Execute(ClipType::Union, FillRule::NonZero, polygons);
+
+    // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
     polygons = InflatePaths(polygons, -0.25, JoinType::Round, EndType::Polygon);
     polygons = SimplifyPaths(polygons, 0.5);
 }
-void Snake::draw_polygon_indicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
+void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
 {
     std::vector<p2t::Point*> seq;
     for(auto &i : polygon)
@@ -72,12 +76,12 @@ float Snake::snakeLength()
 {
     return seg.size() * tightness * CONST::SNAKE_SPEED;
 }
-bool Snake::isInPredatorMode()
+bool Snake::keepPolygonAtTheEnds()
 {
     if(Snake::intersect())
         return false;
     else if(dis2(body.front(), body.back())
-        < CONST::SNAKE_COEFFICIENT_OF_PREDATION_MODE * snakeLength())
+        < CONST::SNAKE_COEFFICIENT_OF_PREDATOR_MODE * snakeLength())
         return true;
     else
         return false;
@@ -106,14 +110,14 @@ void Snake::step()
 }
 void Snake::render(sf::RenderWindow& window)
 {
-    extract_segments();
+    extractSegments();
     
-    extract_enclosed_parts();
+    extractEnclosedParts();
 
     for(auto &polygon : polygons)
-        draw_polygon_indicator(polygon, window);
+        drawPolygonIndicator(polygon, window);
 
-    if(isInPredatorMode())
+    if(keepPolygonAtTheEnds())
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::White);

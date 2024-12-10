@@ -15,15 +15,43 @@ private:
     /// is added, and the first element will be removed if there is
     /// no element in queue
     std::vector<sf::Vector2f> body;
+    /// @brief Helper array to store the segments to be displayed
     std::vector<sf::Vector2f> seg;
+    /// @brief Helper array for storing polygon areas capable of eating fish and green circles
     Clipper2Lib::PathsD polygons;
-    /// @brief number of elements on queue
+    /// @brief number of elements waiting to be added to the snake
     int queued_length;
+    /// @brief 1 out of `tightness` segments will be displayed
     int tightness;
 
-    void extract_segments();
-    void extract_enclosed_parts();
-    void draw_polygon_indicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window);
+    void extractSegments();
+
+    /**
+     * @brief Helper function to extract all the regions that are in eating state.
+     * 
+     * After each call, `polygons` is modified to store all the regions that are in
+     * eating state. `polygons` can be empty when no region is in predator mode.
+     * 
+     * @note `extractSegments()` must be called prior to the call of this function.
+     * 
+     * The function stores its result in `polygon`, all its contents will be overwritten.
+     */
+    void extractEnclosedParts();
+
+    /**
+     * @brief Helper function to draw the polygon indicator for predator mode
+     * onto screen
+     * 
+     * @param polygon a single polygon
+     * @param window the window for the polygon to be drawn
+     * 
+     * @note the `poly2tri` library is not very robust. Make sure that the polygon
+     * is simple and does not contain overlapping points or colinear segments.
+     * 
+     * The function gets its input from `polygon`. Typically used after a call of
+     * `extractEnclosedParts()`.
+     */
+    void drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window);
 
      /**
      * @brief Helper function to determine whether the snake is in eating
@@ -34,12 +62,18 @@ private:
      */
     bool intersect();
     /**
-     * @brief Return the length of the snake (`body.size() * tightness`)
+     * @brief Return the length of the snake on the screen (`body.size() * tightness`)
      * 
-     * @return the length of the snake
+     * @return the length of the snake (in pixels)
      */
     float snakeLength();
-    bool isInPredatorMode();
+    /**
+     * @brief Helper function to determine whether the polygons containing the
+     * head and tail of the snake is in predator mode
+     * 
+     * @return Whether to keep the polygons where the head and tail of the snake are included
+     */
+    bool keepPolygonAtTheEnds();
 
 public:
     Snake(int length);
@@ -47,5 +81,10 @@ public:
     void step();
     void render(sf::RenderWindow& window);
     void setVelocityFromMousePos(sf::RenderWindow& window);
+    /**
+     * @brief Lengthen the snake by 'count' segments
+     * 
+     * @param count 
+     */
     void lengthen(int count);
 };
