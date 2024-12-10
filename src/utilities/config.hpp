@@ -38,9 +38,9 @@ namespace CONST
 
     constexpr float SNAKE_COEFFICIENT_OF_PREDATION_MODE = 0.8f;
 
-    constexpr float GREEN_CIRCLE_SPEED_MAX = 0.10f;
+    constexpr float GREEN_CIRCLE_SPEED_MIN = 0.10f;
 
-    constexpr float GREEN_CIRCLE_SPEED_MIN = 1.0f;
+    constexpr float GREEN_CIRCLE_SPEED_MAX = 1.0f;
 
     constexpr float GREEN_CIRCLE_RADIUS = 20.0f;
 

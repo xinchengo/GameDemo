@@ -41,7 +41,7 @@ bool GameRunner::isEaten(sf::Vector2f pos)
 }
 uint8_t GameRunner::exceedBoundary(sf::Vector2f pos)
 {
-    return (pos.x < 0.0f | pos.x > width) | ((pos.y < 0.0f || pos.y > height) << 1);
+    return (pos.x < 0.0f || pos.x > width) || ((pos.y < 0.0f || pos.y > height) << 1);
 }
 void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
 {
