@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <clipper2/clipper.h>
+#include <poly2tri/poly2tri.h>
 
 #include "utilities/properties.hpp"
 
@@ -14,11 +16,14 @@ private:
     /// no element in queue
     std::vector<sf::Vector2f> body;
     std::vector<sf::Vector2f> seg;
+    Clipper2Lib::PathsD polygons;
     /// @brief number of elements on queue
     int queued_length;
     int tightness;
 
     void extract_segments();
+    void extract_enclosed_parts();
+    void draw_polygon_indicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window);
 
      /**
      * @brief Helper function to determine whether the snake is in eating

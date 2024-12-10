@@ -89,7 +89,7 @@ void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
     }
 }
 
-GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(200)
+GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(500)
 {
     clear();
 }

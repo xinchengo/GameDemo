@@ -3,6 +3,7 @@ project(CMakeSFMLProject LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+# set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 
 # Configuring the source files to generate the executable
@@ -20,6 +21,9 @@ target_link_libraries(game PRIVATE nlohmann_json::nlohmann_json)
 
 find_package(Clipper2 CONFIG REQUIRED)
 target_link_libraries(game PRIVATE Clipper2::Clipper2)
+
+find_package(poly2tri CONFIG REQUIRED)
+target_link_libraries(game PRIVATE poly2tri::poly2tri)
 
 # Specify the asset directories
 set(ASSET_DIR ${CMAKE_SOURCE_DIR}/assets)

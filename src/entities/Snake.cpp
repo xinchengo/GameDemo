@@ -13,6 +13,49 @@ void Snake::extract_segments()
     for (; ind < body.size(); ind += tightness)
         seg.push_back(body[body.size() - ind - 1]);
 }
+void Snake::extract_enclosed_parts()
+{
+    using namespace Clipper2Lib;
+    
+    PathD snakePath;
+    for(auto &i : seg)
+        snakePath.emplace_back(i.x, i.y);
+    
+    ClipperD clipper;
+    clipper.AddSubject({snakePath});
+    clipper.PreserveCollinear(false);
+    clipper.Execute(ClipType::Union, FillRule::NonZero, polygons);
+    polygons = InflatePaths(polygons, -0.25, JoinType::Round, EndType::Polygon);
+    polygons = SimplifyPaths(polygons, 0.5);
+}
+void Snake::draw_polygon_indicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
+{
+    std::vector<p2t::Point*> seq;
+    for(auto &i : polygon)
+    {
+        seq.push_back(new p2t::Point((double)i.x, (double)i.y));
+    }
+    
+    p2t::CDT poly(seq);
+    poly.Triangulate();
+    auto &triags = poly.GetTriangles();
+
+    for(auto &triangle : triags)
+    {
+        sf::VertexArray tri(sf::Triangles, 3);
+        tri[0].position = sf::Vector2f((float)triangle->GetPoint(0)->x, (float)triangle->GetPoint(0)->y);
+        tri[1].position = sf::Vector2f((float)triangle->GetPoint(1)->x, (float)triangle->GetPoint(1)->y);
+        tri[2].position = sf::Vector2f((float)triangle->GetPoint(2)->x, (float)triangle->GetPoint(2)->y);
+        tri[0].color = sf::Color::Green;
+        tri[1].color = sf::Color::Green;
+        tri[2].color = sf::Color::Green;
+        
+        window.draw(tri);
+    }
+
+    for(auto &i : seq)
+        delete i;
+}
 bool Snake::intersect()
 {
     size_t ind = 1;
@@ -64,6 +107,11 @@ void Snake::step()
 void Snake::render(sf::RenderWindow& window)
 {
     extract_segments();
+    
+    extract_enclosed_parts();
+
+    for(auto &polygon : polygons)
+        draw_polygon_indicator(polygon, window);
 
     if(isInPredatorMode())
     {
