@@ -18,7 +18,7 @@ private:
     /// @brief Helper array to store the segments to be displayed
     std::vector<sf::Vector2f> seg;
     /// @brief Helper array for storing polygon areas capable of eating fish and green circles
-    Clipper2Lib::PathsD polygons;
+    Clipper2Lib::PathsD predatorPolygons;
     /// @brief number of elements waiting to be added to the snake
     int queued_length;
     /// @brief 1 out of `tightness` segments will be displayed
@@ -29,12 +29,12 @@ private:
     /**
      * @brief Helper function to extract all the regions that are in eating state.
      * 
-     * After each call, `polygons` is modified to store all the regions that are in
-     * eating state. `polygons` can be empty when no region is in predator mode.
+     * After each call, `predatorPolygons` is modified to store all the regions that are in
+     * eating state. `predatorPolygons` can be empty when no region is in predator mode.
      * 
      * @note `extractSegments()` must be called prior to the call of this function.
      * 
-     * The function stores its result in `polygon`, all its contents will be overwritten.
+     * The function stores its result in `predatorPolygons`, all its contents will be overwritten.
      */
     void extractEnclosedParts();
 
@@ -48,7 +48,7 @@ private:
      * @note the `poly2tri` library is not very robust. Make sure that the polygon
      * is simple and does not contain overlapping points or colinear segments.
      * 
-     * The function gets its input from `polygon`. Typically used after a call of
+     * The function gets its input from `predatorPolygons`. Typically used after a call of
      * `extractEnclosedParts()`.
      */
     void drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window);
