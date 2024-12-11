@@ -8,6 +8,14 @@ void RenderedGameRunner::handleUserInput()
 {
     snake.setVelocityFromMousePos(window);
 }
+void RenderedGameRunner::step()
+{
+    GameRunner::step();
+    if(fishes.empty()) // If all the fish have been eaten
+    {
+        
+    }
+}
 void RenderedGameRunner::eventManager()
 {
     sf::Event event;
@@ -25,16 +33,9 @@ void RenderedGameRunner::eventManager()
 }
 void RenderedGameRunner::render()
 {
-    for(auto &eater : eaters)
-    {
-        eater->render(window);
-    }
     for(auto &fish : fishes)
     {
-        if(!fish->isDead(frameNumber))
-        {
-            fish->render(window);
-        }
+        fish->render(window);
     }
     for(auto &circ : greenCircles)
     {

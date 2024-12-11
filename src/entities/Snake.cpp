@@ -172,3 +172,17 @@ void Snake::lengthen(int count)
 {
     queued_length += count;
 }
+
+bool Snake::hasEaten(sf::Vector2f point)
+{
+    using namespace Clipper2Lib;
+    for(auto &polygon : predatorPolygons)
+    {
+        auto result = PointInPolygon(toPoint<double>(point), polygon);
+        if(result != PointInPolygonResult::IsOutside)
+        {
+            return true;   
+        }
+    }
+    return false;
+}

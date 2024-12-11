@@ -88,4 +88,13 @@ public:
      * @param count 
      */
     void lengthen(int count);
+    /**
+     * @brief Determine whether a point has been eaten by the snake
+     * 
+     * @param point 
+     * @return Whether the point has been eaten by the snake
+     * 
+     * @note
+     */
+    bool hasEaten(sf::Vector2f point);
 };
