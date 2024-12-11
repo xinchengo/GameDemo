@@ -17,15 +17,25 @@ void Snake::extractEnclosedParts()
 {
     using namespace Clipper2Lib;
     
-    PathD snakePath;
+    PathsD snake;
+    snake.emplace_back();
     for(auto &i : seg)
-        snakePath.emplace_back(i.x, i.y); // convert seg to PathD
+        snake.front().emplace_back(i.x, i.y); // convert seg to PathD
+    // If the length of the snake follows a certain criteria, include the segment connecting
+    // the two ends of the snake.
+    if(segmentConnectingEnds() == true)
+    {
+        snake.emplace_back();
+        snake.back().emplace_back(seg.front().x, seg.front().y);
+        snake.back().emplace_back(seg.back().x, seg.back().y);
+    }
+    snake = InflatePaths(snake, CONST::SNAKE_CIRCLE_SIZE, JoinType::Round, EndType::Round);
+    // Now within it stores the polygons representing the region covered by the snake
     
     ClipperD clipper;
-    // the path is treated as a polygon, with the head and tail connected
-    clipper.AddSubject({snakePath});
+    clipper.AddSubject(snake);
     clipper.PreserveCollinear(false);
-    // extract the enclosed (NonZero) parts of the path (treated as a polygon) to `polygons`
+    // extract the enclosed (NonZero) parts of the region ENCIRCLEED by the snake
     clipper.Execute(ClipType::Union, FillRule::NonZero, polygons);
 
     // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
@@ -76,7 +86,7 @@ float Snake::snakeLength()
 {
     return seg.size() * tightness * CONST::SNAKE_SPEED;
 }
-bool Snake::keepPolygonAtTheEnds()
+bool Snake::segmentConnectingEnds()
 {
     if(Snake::intersect())
         return false;
@@ -117,7 +127,7 @@ void Snake::render(sf::RenderWindow& window)
     for(auto &polygon : polygons)
         drawPolygonIndicator(polygon, window);
 
-    if(keepPolygonAtTheEnds())
+    if(segmentConnectingEnds())
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::White);

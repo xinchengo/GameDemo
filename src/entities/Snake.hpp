@@ -68,12 +68,13 @@ private:
      */
     float snakeLength();
     /**
-     * @brief Helper function to determine whether the polygons containing the
-     * head and tail of the snake is in predator mode
+     * @brief Helper function to determine whether the segment connecting the head
+     * and tail of the snake can enclose a region that can eat fish and green circles.
      * 
-     * @return Whether to keep the polygons where the head and tail of the snake are included
+     * @return Whether the segment connecting the head and tail of the snake can
+     * enclose a region in predator mode.
      */
-    bool keepPolygonAtTheEnds();
+    bool segmentConnectingEnds();
 
 public:
     Snake(int length);
