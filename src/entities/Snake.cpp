@@ -2,7 +2,8 @@
 
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
-#include "..\utilities\mathUtils.hpp"
+#include "utilities/mathUtils.hpp"
+#include "utilities/typeUtils.hpp"
 #include "utilities/AssetManager.hpp"
 
 void Snake::extractSegments()
@@ -17,20 +18,27 @@ void Snake::extractEnclosedParts()
 {
     using namespace Clipper2Lib;
     
-    PathD snakePath;
-    for(auto &i : seg)
-        snakePath.emplace_back(i.x, i.y); // convert seg to PathD
+    PathsD snake = {toPath<double>(seg)};
+    // If the length of the snake follows a certain criteria, include the segment connecting
+    // the two ends of the snake.
+    if(segmentConnectingEnds() == true)
+    {
+        snake.emplace_back();
+        snake.back().emplace_back(toPoint<double>(seg.front()));
+        snake.back().emplace_back(toPoint<double>(seg.back()));
+    }
+    snake = InflatePaths(snake, CONST::SNAKE_CIRCLE_SIZE, JoinType::Round, EndType::Round);
+    // Now within it stores the polygons representing the region covered by the snake
     
     ClipperD clipper;
-    // the path is treated as a polygon, with the head and tail connected
-    clipper.AddSubject({snakePath});
+    clipper.AddSubject(snake);
     clipper.PreserveCollinear(false);
-    // extract the enclosed (NonZero) parts of the path (treated as a polygon) to `polygons`
-    clipper.Execute(ClipType::Union, FillRule::NonZero, polygons);
+    // extract the enclosed (NonZero) parts of the region ENCIRCLEED by the snake
+    clipper.Execute(ClipType::Union, FillRule::NonZero, predatorPolygons);
 
     // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
-    polygons = InflatePaths(polygons, -0.25, JoinType::Round, EndType::Polygon);
-    polygons = SimplifyPaths(polygons, 0.5);
+    predatorPolygons = InflatePaths(predatorPolygons, -0.25, JoinType::Round, EndType::Polygon);
+    predatorPolygons = SimplifyPaths(predatorPolygons, 0.5);
 }
 void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
 {
@@ -47,9 +55,9 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
     for(auto &triangle : triags)
     {
         sf::VertexArray tri(sf::Triangles, 3);
-        tri[0].position = sf::Vector2f((float)triangle->GetPoint(0)->x, (float)triangle->GetPoint(0)->y);
-        tri[1].position = sf::Vector2f((float)triangle->GetPoint(1)->x, (float)triangle->GetPoint(1)->y);
-        tri[2].position = sf::Vector2f((float)triangle->GetPoint(2)->x, (float)triangle->GetPoint(2)->y);
+        tri[0].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
+        tri[1].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
+        tri[2].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
         tri[0].color = sf::Color::Green;
         tri[1].color = sf::Color::Green;
         tri[2].color = sf::Color::Green;
@@ -76,7 +84,7 @@ float Snake::snakeLength()
 {
     return seg.size() * tightness * CONST::SNAKE_SPEED;
 }
-bool Snake::keepPolygonAtTheEnds()
+bool Snake::segmentConnectingEnds()
 {
     if(Snake::intersect())
         return false;
@@ -114,10 +122,10 @@ void Snake::render(sf::RenderWindow& window)
     
     extractEnclosedParts();
 
-    for(auto &polygon : polygons)
+    for(auto &polygon : predatorPolygons)
         drawPolygonIndicator(polygon, window);
 
-    if(keepPolygonAtTheEnds())
+    if(segmentConnectingEnds())
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::White);
@@ -163,4 +171,18 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
 void Snake::lengthen(int count)
 {
     queued_length += count;
+}
+
+bool Snake::hasEaten(sf::Vector2f point)
+{
+    using namespace Clipper2Lib;
+    for(auto &polygon : predatorPolygons)
+    {
+        auto result = PointInPolygon(toPoint<double>(point), polygon);
+        if(result != PointInPolygonResult::IsOutside)
+        {
+            return true;   
+        }
+    }
+    return false;
 }

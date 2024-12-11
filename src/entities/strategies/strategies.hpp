@@ -2,7 +2,7 @@
 
 #include<array>
 
-#include "..\..\utilities\mathUtils.hpp"
+#include "utilities/mathUtils.hpp"
 #include "utilities/config.hpp"
 
 class SensoryState

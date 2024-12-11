@@ -11,7 +11,7 @@ class RenderedGameRunner : public GameRunner, public Scene
 private:
     sf::RenderWindow &window;
 public:
-    void step() override { GameRunner::step(); }
+    void step() override;
     
     void eventManager();
     void render();
