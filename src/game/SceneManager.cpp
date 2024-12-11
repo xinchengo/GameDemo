@@ -1,4 +1,4 @@
-#include "sceneManager.hpp"
+#include "SceneManager.hpp"
 
 std::shared_ptr<Scene> & SceneManager::currentScene()
 {

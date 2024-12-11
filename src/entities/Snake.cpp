@@ -50,7 +50,7 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
     
     p2t::CDT poly(seq);
     poly.Triangulate();
-    auto &triags = poly.GetTriangles();
+    auto triags = poly.GetTriangles();
 
     for(auto &triangle : triags)
     {
