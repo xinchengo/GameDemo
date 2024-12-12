@@ -13,7 +13,11 @@ void RenderedGameRunner::step()
     GameRunner::step();
     if(fishes.empty()) // If all the fish have been eaten
     {
-        
+        popScene();
+    }
+    if(!eatenGreenCircles.empty()) // If the snake has eaten a green circle
+    {
+        popScene();
     }
 }
 void RenderedGameRunner::eventManager()

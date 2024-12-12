@@ -5,6 +5,7 @@
 #include <queue>
 #include <memory>
 #include <variant>
+#include <optional>
 
 class Scene;
 
@@ -52,8 +53,10 @@ class SceneManager
 private:
     sf::RenderWindow &window;
     std::stack<std::shared_ptr<Scene>> scenes;
+    std::queue<SceneEvent> events;
 
     std::shared_ptr<Scene> & currentScene();
+    void fetchEventsFromScene();
 
 public:  
     SceneManager(sf::RenderWindow &window) : window(window) {}  
