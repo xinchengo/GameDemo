@@ -45,6 +45,18 @@ void load_assets()
     }
 }
 
+std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
+{
+    auto game = std::make_shared<RenderedGameRunner>(window);
+    game->bindLoseScene(std::make_shared<LoseScene>(window));
+    game->bindWinScene(std::make_shared<WinScene>(window));
+    game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 10);
+    game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 10);
+    game->newGreenCircles(3);
+    game->newSnake(sf::Vector2f(0.0, 0.0), 300);
+    return game;
+}
+
 int main()
 {
     load_assets();
@@ -57,20 +69,11 @@ int main()
 
     SceneManager sceneManager(window);
 
-    auto game = std::make_shared<RenderedGameRunner>(window);
-    game->bindLoseScene(std::make_shared<LoseScene>(window));
-    game->bindWinScene(std::make_shared<WinScene>(window));
-    game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 10);
-    game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 10);
-    game->newGreenCircles(3);
-    game->newSnake(sf::Vector2f(0.0, 0.0), 300);
-
     auto start = std::make_shared<StartScene>(window);
-    start->bindGameScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
+    start->bindNewGameFunction(newGame);
 
     // sceneManager.setScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
     sceneManager.setScene(std::static_pointer_cast<Scene, StartScene>(start));
-
 
     while (window.isOpen())
     {

@@ -17,8 +17,8 @@ private:
 public:
     void step() override;
     
-    void eventManager();
-    void render();
+    void eventManager() override;
+    void render() override;
     void bindWinScene(std::shared_ptr<Scene> scene);
     void bindLoseScene(std::shared_ptr<Scene> scene);
     RenderedGameRunner(sf::RenderWindow &);

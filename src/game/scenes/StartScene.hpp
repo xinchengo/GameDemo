@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <functional>
 #include "game/SceneManager.hpp"
+#include "game/scenes/RenderedGameRunner.hpp"
 #include "utilities/AssetManager.hpp"
 
 class StartScene : public Scene
@@ -10,7 +12,6 @@ class StartScene : public Scene
 private:
     sf::RenderWindow &window;
     
-    std::shared_ptr<Scene> gameScene;
     std::shared_ptr<Scene> settingsScene;
     std::shared_ptr<Scene> aboutScene;
 
@@ -19,6 +20,8 @@ private:
     sf::Sprite settingsButton;
     sf::Sprite exitButton;
     sf::Sprite aboutButton;
+
+    std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> newGame;
     
 public:
 
@@ -45,7 +48,7 @@ public:
         aboutButton.setOrigin(aboutButton.getGlobalBounds().getSize() * 0.5f);
         aboutButton.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.85f);
     }
-    void bindGameScene(std::shared_ptr<Scene> scene);
+    void bindNewGameFunction(std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> func);
     void bindSettingsScene(std::shared_ptr<Scene> scene);
     void bindAboutScene(std::shared_ptr<Scene> scene);
 

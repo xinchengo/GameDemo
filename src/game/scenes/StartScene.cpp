@@ -1,8 +1,9 @@
 #include "StartScene.hpp"
 
-void StartScene::bindGameScene(std::shared_ptr<Scene> scene)
+
+void StartScene::bindNewGameFunction(std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> func)
 {
-    gameScene = scene;
+    newGame = func;
 }
 
 void StartScene::bindSettingsScene(std::shared_ptr<Scene> scene)
@@ -39,7 +40,7 @@ void StartScene::eventManager()
         case sf::Event::MouseButtonPressed:
             if(startButton.getGlobalBounds().contains(worldPos))
             {
-                pushScene(gameScene);
+                pushScene(newGame(window));
             }
             break;
         default:
