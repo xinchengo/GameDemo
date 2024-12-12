@@ -43,9 +43,6 @@ public:
 
     // The scene's event manager
     virtual void eventManager() = 0;
-
-    // Handle user input  
-    virtual void handleUserInput() = 0;  
 };
 
 class SceneManager

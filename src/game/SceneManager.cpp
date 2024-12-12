@@ -36,7 +36,6 @@ void SceneManager::update()
     {
         
         currentScene()->eventManager();
-        currentScene()->handleUserInput();  
         currentScene()->step();  
         currentScene()->render();  
     }

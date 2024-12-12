@@ -64,7 +64,7 @@ void GameRunner::updateSensoryState(std::unique_ptr<Fish> &fish)
     }
 }
 
-GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(500), frameNumber(0) { }
+GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(), frameNumber(0) { }
 
 void GameRunner::newRandomFish(CONST::FISH_STRATEGY stra, int cnt)
 {
@@ -85,6 +85,10 @@ void GameRunner::newGreenCircles(int cnt)
         greenCircles.emplace_back(createGreenCircle(randPointInScreen(width, height)));
     }
 }
+void GameRunner::newSnake(sf::Vector2f position, int length)
+{
+    snake = std::make_unique<Snake>(position, length);
+}
 void GameRunner::step()
 {
     frameNumber++;
@@ -99,7 +103,10 @@ void GameRunner::step()
         fish->step();
     }
     // the snake moves
-    snake.step();
+    if(snake) // if the snake exists
+    {
+        snake->step();
+    }
     // The greenCircle moves
     for(auto &circ : greenCircles)
     {
@@ -108,24 +115,30 @@ void GameRunner::step()
         circ->bounce(exceedBoundary(circ->getCenter()));
     }
     // Remove all the fish been eaten
-    for(size_t i = 0; i < fishes.size(); i++)
+    if(snake)
     {
-        if(snake.hasEaten(fishes[i]->getCenter()))
+        for(size_t i = 0; i < fishes.size(); i++)
         {
-            // Remove the fish from list
-            std::swap(fishes[i], fishes.back());
-            fishes.pop_back();
+            if(snake->hasEaten(fishes[i]->getCenter()))
+            {
+                // Remove the fish from list
+                std::swap(fishes[i], fishes.back());
+                fishes.pop_back();
+            }
         }
     }
     // Remove all the green circles been eaten
-    for(size_t i = 0; i < greenCircles.size(); i++)
+    if(snake)
     {
-        if(snake.hasEaten(greenCircles[i]->getCenter()))
+        for(size_t i = 0; i < greenCircles.size(); i++)
         {
-            // Remove the green circle from list
-            std::swap(greenCircles[i], greenCircles.back());
-            eatenGreenCircles.emplace_back(std::move(greenCircles.back()));
-            greenCircles.pop_back();
+            if(snake->hasEaten(greenCircles[i]->getCenter()))
+            {
+                // Remove the green circle from list
+                std::swap(greenCircles[i], greenCircles.back());
+                eatenGreenCircles.emplace_back(std::move(greenCircles.back()));
+                greenCircles.pop_back();
+            }
         }
     }
     // Update the sensory states of all the fish

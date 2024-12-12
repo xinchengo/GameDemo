@@ -52,7 +52,3 @@ void StartScene::step()
 {
 }
 
-void StartScene::handleUserInput()
-{
-    
-}

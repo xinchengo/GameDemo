@@ -42,6 +42,18 @@
         "y": 468,
         "width": 216,
         "height": 108
+      },
+      "youWin": {
+        "x": 720,
+        "y": 360,
+        "width": 432,
+        "height": 144
+      },
+      "youLose": {
+        "x": 720,
+        "y": 216,
+        "width": 432,
+        "height": 144
       }
     }
   },

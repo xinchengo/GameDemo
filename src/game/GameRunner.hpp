@@ -22,13 +22,14 @@ protected:
     float height, width;
     std::vector<std::unique_ptr<Fish>> fishes;
     std::vector<std::unique_ptr<GreenCircle>> greenCircles, eatenGreenCircles;
-    Snake snake;
+    std::unique_ptr<Snake> snake;
     
 public:
 
     void newRandomFish(CONST::FISH_STRATEGY, int=1);
     void newRandomFish(std::unique_ptr<FishStrategy> &);
     void newGreenCircles(int=1);
+    void newSnake(sf::Vector2f, int);
     GameRunner(float, float);
     void step();
 };

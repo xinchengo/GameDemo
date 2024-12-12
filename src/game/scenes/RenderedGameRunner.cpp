@@ -4,24 +4,26 @@ RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) :
     GameRunner((float)window.getSize().x, (float)window.getSize().y),
     window(window) {}
 
-void RenderedGameRunner::handleUserInput()
-{
-    snake.setVelocityFromMousePos(window);
-}
 void RenderedGameRunner::step()
 {
     GameRunner::step();
     if(fishes.empty()) // If all the fish have been eaten
     {
         popScene();
+        pushScene(winScene);
     }
     if(!eatenGreenCircles.empty()) // If the snake has eaten a green circle
     {
         popScene();
+        pushScene(loseScene);
     }
 }
 void RenderedGameRunner::eventManager()
 {
+    if(snake)
+    {
+        snake->setVelocityFromMousePos(window);
+    }
     sf::Event event;
     while(window.pollEvent(event));
     {
@@ -45,5 +47,18 @@ void RenderedGameRunner::render()
     {
         circ->render(window);
     }
-    snake.render(window);
+    if(snake)
+    {
+        snake->render(window);
+    }
+}
+
+void RenderedGameRunner::bindWinScene(std::shared_ptr<Scene> scene)
+{
+    winScene = scene;
+}
+
+void RenderedGameRunner::bindLoseScene(std::shared_ptr<Scene> scene)
+{
+    loseScene = scene;
 }

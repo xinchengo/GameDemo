@@ -78,6 +78,7 @@ private:
 
 public:
     Snake(int length);
+    Snake(sf::Vector2f position, int length);
     sf::Vector2f headPos();
     void step();
     void render(sf::RenderWindow& window);

@@ -52,5 +52,4 @@ public:
     void render() override;
     void step() override;
     void eventManager() override;
-    void handleUserInput() override;
 };

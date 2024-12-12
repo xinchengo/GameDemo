@@ -58,9 +58,9 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
         tri[0].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
         tri[1].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
         tri[2].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
-        tri[0].color = sf::Color::Green;
-        tri[1].color = sf::Color::Green;
-        tri[2].color = sf::Color::Green;
+        tri[0].color = sf::Color(0x5b9bd5ff);
+        tri[1].color = sf::Color(0x5b9bd5ff);
+        tri[2].color = sf::Color(0x5b9bd5ff);
         
         window.draw(tri);
     }
@@ -103,6 +103,13 @@ Snake::Snake(int length)
     }
     tightness = 10;
     queued_length = 0;
+}
+Snake::Snake(sf::Vector2f position, int length) : Snake(length)
+{
+    for(auto &point : body)
+    {
+        point += position;
+    }
 }
 sf::Vector2f Snake::headPos()
 {

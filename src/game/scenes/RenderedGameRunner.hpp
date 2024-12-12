@@ -10,11 +10,16 @@ class RenderedGameRunner : public GameRunner, public Scene
 {
 private:
     sf::RenderWindow &window;
+
+    std::shared_ptr<Scene> winScene;
+    std::shared_ptr<Scene> loseScene;
+
 public:
     void step() override;
     
     void eventManager();
     void render();
-    void handleUserInput();
+    void bindWinScene(std::shared_ptr<Scene> scene);
+    void bindLoseScene(std::shared_ptr<Scene> scene);
     RenderedGameRunner(sf::RenderWindow &);
 };

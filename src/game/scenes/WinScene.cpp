@@ -1,15 +1,15 @@
-#include "LoseScene.hpp"
+#include "WinScene.hpp"
 
-void LoseScene::render()
+void WinScene::render()
 {
     window.draw(text);
 }
 
-void LoseScene::step()
+void WinScene::step()
 {
 }
 
-void LoseScene::eventManager()
+void WinScene::eventManager()
 {
     sf::Event event;
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);

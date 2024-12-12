@@ -9,6 +9,8 @@
 #include "game/SceneManager.hpp"
 #include "game/scenes/RenderedGameRunner.hpp"
 #include "game/scenes/StartScene.hpp"
+#include "game/scenes/WinScene.hpp"
+#include "game/scenes/LoseScene.hpp"
 #include "utilities/config.hpp"
 #include "utilities/AssetManager.hpp"
 
@@ -56,9 +58,12 @@ int main()
     SceneManager sceneManager(window);
 
     auto game = std::make_shared<RenderedGameRunner>(window);
-    game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 30);
-    game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 30);
-    game->newGreenCircles(10);
+    game->bindLoseScene(std::make_shared<LoseScene>(window));
+    game->bindWinScene(std::make_shared<WinScene>(window));
+    game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 10);
+    game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 10);
+    game->newGreenCircles(3);
+    game->newSnake(sf::Vector2f(0.0, 0.0), 300);
 
     auto start = std::make_shared<StartScene>(window);
     start->bindGameScene(std::static_pointer_cast<Scene, RenderedGameRunner>(game));
