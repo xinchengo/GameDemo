@@ -56,6 +56,14 @@ float cross(sf::Vector2f, sf::Vector2f);
 /// @return The value of a.x * b.x + a.y * b.y
 float dot(sf::Vector2f, sf::Vector2f);
 
+/// @brief Normalize the length of vector `a` to `desiredLength`
+/// @return The vector normalized to desiredLength
+sf::Vector2f normalizeVec(sf::Vector2f a, float desiredLength);
+
+/// @brief Clamp the length of vector `a` to `lengthLimit`
+/// @return The vector clamped to `lengthLimit`
+sf::Vector2f clampVec(sf::Vector2f a, float lengthLimit);
+
 /// @brief Calculate arg(a) - arg(b) normalized to (-pi/2, pi/2)
 /// @return the value of norm(arg(a) - arg(b))
 /// @note cross product computes cos(arg(b) - arg(a)), so a minus sign is added

@@ -8,12 +8,11 @@
 /// @brief Property of an object for having a center
 class HasCenter
 {
-protected:
-    sf::Vector2f center;
 public:
+    sf::Vector2f center;
     /// @brief Set `C` as the center of the object
     /// @param C the center
-    void setCenter(sf::Vector2f& C)
+    void setCenter(sf::Vector2f C)
     {
         center = C;
     }
@@ -28,12 +27,11 @@ public:
 /// @brief Property of an object for having a velocity
 class HasVelocity
 {
-protected:
-    sf::Vector2f velocity;
 public:
+    sf::Vector2f velocity;
     /// @brief Set the velocity of the object to `C`
     /// @param C the velocity
-    void setVelocity(sf::Vector2f& C)
+    void setVelocity(sf::Vector2f C)
     {
         velocity = C;
     }

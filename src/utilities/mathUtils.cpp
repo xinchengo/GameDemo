@@ -40,6 +40,17 @@ float length(sf::Vector2f a)
 {
     return std::hypot(a.x, a.y);
 }
+sf::Vector2f normalizeVec(sf::Vector2f a, float desiredLength)
+{
+    return a / length(a) * desiredLength;
+}
+sf::Vector2f clampVec(sf::Vector2f a, float lengthLimit)
+{
+    if(length(a) > lengthLimit)
+        return normalizeVec(a, lengthLimit);
+    else
+        return a;
+}
 float angleDifference(sf::Vector2f a, sf::Vector2f b)
 {
     return -std::atan2(a.x * b.y - a.y * b.x, a.x * b.x + a.y * b.y);
