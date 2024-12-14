@@ -13,7 +13,13 @@ uint8_t GameRunner::exceedBoundary(sf::Vector2f pos)
     return (pos.x < 0.0f || pos.x > width) | ((pos.y < 0.0f || pos.y > height) << 1);
 }
 
-GameRunner::GameRunner(float width, float height) : width(width), height(height), snake(), frameNumber(0) { }
+GameRunner::GameRunner(float width, float height) : 
+    width(width), height(height), snake(), frameNumber(0), fish(width, height) { }
+
+void GameRunner::newFish(int cnt)
+{
+    fish.createBoids(cnt);
+}
 
 void GameRunner::newGreenCircles(int cnt)
 {
@@ -29,6 +35,8 @@ void GameRunner::newSnake(sf::Vector2f position, int length)
 void GameRunner::step()
 {
     frameNumber++;
+    // the fish moves
+    fish.step();
     // the snake moves
     if(snake) // if the snake exists
     {

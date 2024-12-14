@@ -6,23 +6,26 @@
 
 #include "entities/Snake.hpp"
 #include "entities/GreenCircle.hpp"
+#include "entities/boids/Swarm.hpp"
 
 class GameRunner
 {
 private:
-    uint8_t exceedBoundary(sf::Vector2f);
-    GreenCircle* createGreenCircle(sf::Vector2f);
+    uint8_t exceedBoundary(sf::Vector2f pos);
+    GreenCircle* createGreenCircle(sf::Vector2f pos);
 
 protected:
     size_t frameNumber;
     float height, width;
+    Swarm fish;
     std::vector<std::unique_ptr<GreenCircle>> greenCircles, eatenGreenCircles;
     std::unique_ptr<Snake> snake;
     
 public:
 
-    void newGreenCircles(int=1);
-    void newSnake(sf::Vector2f, int);
-    GameRunner(float, float);
+    void newFish(int cnt=1);
+    void newGreenCircles(int cnt=1);
+    void newSnake(sf::Vector2f position, int length);
+    GameRunner(float width, float height);
     void step();
 };

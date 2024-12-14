@@ -43,6 +43,7 @@ void RenderedGameRunner::render()
     // {
     //     fish->render(window);
     // }
+    fish.render(window);
     for(auto &circ : greenCircles)
     {
         circ->render(window);
