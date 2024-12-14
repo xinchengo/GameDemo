@@ -4,41 +4,28 @@
 #include<vector>
 #include<memory>
 
-#include "entities/Fish.hpp"
 #include "entities/Snake.hpp"
 #include "entities/GreenCircle.hpp"
+#include "entities/boids/Swarm.hpp"
 
 class GameRunner
 {
 private:
-    uint8_t exceedBoundary(sf::Vector2f);
-    void updateSensoryState(std::unique_ptr<Fish> &);
-    Fish* createFish(sf::Vector2f, CONST::FISH_STRATEGY);
-    Fish* createFish(sf::Vector2f, std::unique_ptr<FishStrategy> &);
-    GreenCircle* createGreenCircle(sf::Vector2f);
+    uint8_t exceedBoundary(sf::Vector2f pos);
+    GreenCircle* createGreenCircle(sf::Vector2f pos);
 
 protected:
     size_t frameNumber;
     float height, width;
-    std::vector<std::unique_ptr<Fish>> fishes;
+    Swarm fish;
     std::vector<std::unique_ptr<GreenCircle>> greenCircles, eatenGreenCircles;
     std::unique_ptr<Snake> snake;
     
 public:
 
-    void newRandomFish(CONST::FISH_STRATEGY, int=1);
-    void newRandomFish(std::unique_ptr<FishStrategy> &);
-    void newGreenCircles(int=1);
-    void newSnake(sf::Vector2f, int);
-    GameRunner(float, float);
+    void newFish(int cnt=1);
+    void newGreenCircles(int cnt=1);
+    void newSnake(sf::Vector2f position, int length);
+    GameRunner(float width, float height);
     void step();
-};
-
-
-
-struct TrainStats
-{
-    float meanLifespan;
-    std::vector<float> lifespans;
-    std::vector<LinearStrategy> yieldingStrategies;
 };

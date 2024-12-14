@@ -7,11 +7,11 @@ RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) :
 void RenderedGameRunner::step()
 {
     GameRunner::step();
-    if(fishes.empty()) // If all the fish have been eaten
-    {
-        popScene();
-        pushScene(winScene);
-    }
+    // if(fishes.empty()) // If all the fish have been eaten
+    // {
+    //     popScene();
+    //     pushScene(winScene);
+    // }
     if(!eatenGreenCircles.empty()) // If the snake has eaten a green circle
     {
         popScene();
@@ -39,10 +39,11 @@ void RenderedGameRunner::eventManager()
 }
 void RenderedGameRunner::render()
 {
-    for(auto &fish : fishes)
-    {
-        fish->render(window);
-    }
+    // for(auto &fish : fishes)
+    // {
+    //     fish->render(window);
+    // }
+    fish.render(window);
     for(auto &circ : greenCircles)
     {
         circ->render(window);
