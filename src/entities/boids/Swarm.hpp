@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include <functional>
 #include <vector>
 #include "utilities/properties.hpp"
 #include "utilities/config.hpp"
@@ -28,8 +29,10 @@ private:
     float width, height;
 
     std::vector<Boid> boids;
+    std::vector<sf::Vector2f> predators;
     
     void avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
+    void avoidPredators(Boid &boid);
     void matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
     void flyTowardsCenter(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
     /// @brief Helper function to nudge a boid back if it gets too close to the edge
@@ -54,6 +57,19 @@ public:
      */
     void createBoids(int cnt);
     const std::vector<Boid> &getBoids();
+    /**
+     * @brief Remove all the boids that have been eaten
+     * according to function `hasEaten`.
+     * 
+     * @param hasEaten the criteria of being eaten
+     */
+    void removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten);
+    /**
+     * @brief Set `predators` as the list of predators
+     * 
+     * @param predators the list of predators
+     */
+    void setPredators(std::vector<sf::Vector2f> &predators);
     void step();
     void render(sf::RenderWindow &window);
 };

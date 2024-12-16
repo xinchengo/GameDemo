@@ -115,6 +115,10 @@ sf::Vector2f Snake::headPos()
 {
     return body.back();
 }
+std::vector<sf::Vector2f> &Snake::getPredatorList()
+{
+    return seg;
+}
 void Snake::step()
 {
     body.push_back(body.back() + velocity);

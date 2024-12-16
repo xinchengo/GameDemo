@@ -20,6 +20,24 @@ const std::vector<Boid> &Swarm::getBoids()
     return boids;
 }
 
+void Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten)
+{
+    for(size_t i = 0; i < boids.size(); i++)
+    {
+        if(hasEaten(boids[i].getCenter()))
+        {
+            // Remove the fish from list
+            std::swap(boids[i], boids.back());
+            boids.pop_back();
+        }
+    }
+}
+
+void Swarm::setPredators(std::vector<sf::Vector2f> &predatorList)
+{
+    predators = predatorList;
+}
+
 void Swarm::step()
 {
     updateAcceleration();
@@ -29,7 +47,15 @@ void Swarm::render(sf::RenderWindow &window)
 {
     sf::VertexArray tri(sf::Triangles);
 
-    // std::cout << boids.front().getCenter().x << std::endl;
+    // int normalCnt = 0;
+    // for(auto &boid : boids)
+    // {
+    //     if(boid.getCenter().x < width && boid.getCenter().y < height && boid.getCenter().x > 0 && boid.getCenter().y > 0)
+    //     {
+    //         normalCnt++;
+    //     }
+    // }
+    // std::cout << normalCnt << std::endl;
 
     for(auto &boid : boids)
     {
@@ -73,6 +99,7 @@ void Swarm::updateAcceleration()
         flyTowardsCenter(boid, nearbyBoids);
         avoidOthers(boid, boidsToAvoid);
         matchVelocity(boid, nearbyBoids);
+        avoidPredators(boid);
         clampVelocity(boid);
         keepWithinBounds(boid);
 
@@ -93,6 +120,19 @@ void Swarm::avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &n
     }
     // repulsionSum /= float(nearbyBoids.size());
     boid.velocity += repulsionSum * CONST::SWARM_SEPARATION_FACTOR;
+}
+
+void Swarm::avoidPredators(Boid &boid)
+{
+    sf::Vector2f replusionSum;
+    for(auto &predator : predators)
+    {
+        if(dis2(predator, boid.center) < CONST::SWARM_VISUAL_RANGE)
+        {
+            replusionSum += boid.center - predator;
+        }
+    }
+    boid.velocity += replusionSum * CONST::SWARM_PREDATOR_REPLUSION_FACTOR;
 }
 
 void Swarm::matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids)

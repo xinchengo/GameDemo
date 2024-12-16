@@ -35,13 +35,15 @@ void GameRunner::newSnake(sf::Vector2f position, int length)
 void GameRunner::step()
 {
     frameNumber++;
-    // the fish moves
-    fish.step();
     // the snake moves
     if(snake) // if the snake exists
     {
         snake->step();
+        // set the snake as a list of predators
+        fish.setPredators(snake->getPredatorList());
     }
+    // the fish moves
+    fish.step();
     // The greenCircle moves
     for(auto &circ : greenCircles)
     {
@@ -49,9 +51,9 @@ void GameRunner::step()
         // the green circle bounces on hitting the boundary
         circ->bounce(exceedBoundary(circ->getCenter()));
     }
-    // Remove all the green circles been eaten
     if(snake)
     {
+        // Remove all the green circles been eaten
         for(size_t i = 0; i < greenCircles.size(); i++)
         {
             if(snake->hasEaten(greenCircles[i]->getCenter()))
@@ -62,5 +64,8 @@ void GameRunner::step()
                 greenCircles.pop_back();
             }
         }
+        // Remove all the fish been eaten
+        auto hasEaten = [&](sf::Vector2f point) {return snake->hasEaten(point); };
+        fish.removeBoidsEaten(hasEaten);
     }
 }
