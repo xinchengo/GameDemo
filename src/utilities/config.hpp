@@ -21,6 +21,8 @@ namespace CONST
 
     constexpr float SWARM_TURN_FACTOR = 0.1f;
 
+    constexpr float SWARM_PREDATOR_REPLUSION_FACTOR = 0.05f;
+
     constexpr float SWARM_VISUAL_RANGE = 75.0f;
 
     constexpr float SWARM_AVOID_THRESHOLD_RANGE = 20.0f;

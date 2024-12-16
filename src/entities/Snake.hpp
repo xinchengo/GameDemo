@@ -80,6 +80,7 @@ public:
     Snake(int length);
     Snake(sf::Vector2f position, int length);
     sf::Vector2f headPos();
+    std::vector<sf::Vector2f> &getPredatorList();
     void step();
     void render(sf::RenderWindow& window);
     void setVelocityFromMousePos(sf::RenderWindow& window);
