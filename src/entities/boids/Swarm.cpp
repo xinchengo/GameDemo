@@ -22,15 +22,13 @@ const std::vector<Boid> &Swarm::getBoids()
 
 void Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten)
 {
-    for(size_t i = 0; i < boids.size(); i++)
+    // Move all eaten boids to the end of the vector
+    auto new_end = std::remove_if(boids.begin(), boids.end(), [&](auto& boid)
     {
-        if(hasEaten(boids[i].getCenter()))
-        {
-            // Remove the fish from list
-            std::swap(boids[i], boids.back());
-            boids.pop_back();
-        }
-    }
+        return hasEaten(boid.getCenter());  // Check if the boid has been eaten
+    });
+    // Remove the eaten boids from the vector
+    boids.erase(new_end, boids.end());
 }
 
 void Swarm::setPredators(std::vector<sf::Vector2f> &predatorList)

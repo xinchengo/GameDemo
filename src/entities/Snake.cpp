@@ -39,6 +39,12 @@ void Snake::extractEnclosedParts()
     // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
     predatorPolygons = InflatePaths(predatorPolygons, -0.25, JoinType::Round, EndType::Polygon);
     predatorPolygons = SimplifyPaths(predatorPolygons, 0.5);
+
+    // Remove all degenerate polygons (vertices < 3)
+    predatorPolygons.erase(
+    std::remove_if(predatorPolygons.begin(), predatorPolygons.end(), 
+                   [](const auto& polygon) { return polygon.size() < 3; }),
+    predatorPolygons.end());
 }
 void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
 {

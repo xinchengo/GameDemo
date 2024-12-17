@@ -53,17 +53,20 @@ void GameRunner::step()
     }
     if(snake)
     {
-        // Remove all the green circles been eaten
-        for(size_t i = 0; i < greenCircles.size(); i++)
+        // Move all the green circles that have been eaten to eatenGreenCircles
+        auto new_end = std::remove_if(greenCircles.begin(), greenCircles.end(), 
+        [&](auto& circle)
         {
-            if(snake->hasEaten(greenCircles[i]->getCenter()))
+            if (snake->hasEaten(circle->getCenter()))
             {
-                // Remove the green circle from list
-                std::swap(greenCircles[i], greenCircles.back());
-                eatenGreenCircles.emplace_back(std::move(greenCircles.back()));
-                greenCircles.pop_back();
+                eatenGreenCircles.push_back(std::move(circle));  // Move to eatenGreenCircles
+                return true;  // Mark for removal
             }
-        }
+            return false;  // Keep the circle
+        });
+        // Erase the "removed" circles from the original vector
+        greenCircles.erase(new_end, greenCircles.end());
+        
         // Remove all the fish been eaten
         auto hasEaten = [&](sf::Vector2f point) {return snake->hasEaten(point); };
         fish.removeBoidsEaten(hasEaten);
