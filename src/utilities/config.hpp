@@ -44,4 +44,6 @@ namespace CONST
     constexpr float GREEN_CIRCLE_RADIUS = 20.0f;
 
     constexpr float GREEN_CIRCLE_OUTLINE_THICKNESS = 5.0f;
+
+    constexpr   float GROWTH_PERCENTAGE = 0.004f;
 }
