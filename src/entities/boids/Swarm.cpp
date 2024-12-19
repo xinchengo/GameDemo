@@ -226,4 +226,4 @@ void Swarm::keepWithinBounds(Boid &boid, float time)
 
 DeadBoid::DeadBoid() : Boid(), disappearTime(config.swarmDisappearTimeAfterEaten) {}
 
-DeadBoid::DeadBoid(Boid &boid) : Boid(boid), disappearTime(config.swarmDisappearTimeAfterEaten) {}
+DeadBoid::DeadBoid(const Boid &boid) : Boid(boid), disappearTime(config.swarmDisappearTimeAfterEaten) {}

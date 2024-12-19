@@ -24,7 +24,7 @@ class DeadBoid : public Boid
 public:
     float disappearTime;
     DeadBoid();
-    DeadBoid(Boid &boid);
+    DeadBoid(const Boid &boid);
 };
 
 /**
