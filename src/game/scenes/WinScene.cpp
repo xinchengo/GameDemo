@@ -38,7 +38,7 @@ void WinScene::eventManager()
     sf::Event event;
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
     sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
-    while(window.pollEvent(event));
+    while(window.pollEvent(event))
     {
         switch(event.type)
         {
@@ -47,6 +47,13 @@ void WinScene::eventManager()
             break;
         case sf::Event::Resized:
             handleResize(sf::Vector2u(event.size.width, event.size.height));
+            break;
+        case sf::Event::KeyPressed:
+            if(event.key.code == sf::Keyboard::Key::F)
+            {
+                toggleFullscreen(window);
+                handleResize(window.getSize());
+            }
             break;
         case sf::Event::MouseButtonPressed:
             if(text.getGlobalBounds().contains(worldPos))
