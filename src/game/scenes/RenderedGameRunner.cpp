@@ -1,27 +1,46 @@
 #include "RenderedGameRunner.hpp"
+#include <SFML/Window/Keyboard.hpp>
 
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
     GameRunner((float)window.getSize().x, (float)window.getSize().y),
     window(window)
 {
     pauseKey = static_cast<sf::Keyboard::Key>(config.gamePauseKey);
+    delayDuration = std::chrono::duration<float, std::ratio<1>>(config.gameDelayWhenGameIsOver);
 }
 
 void RenderedGameRunner::step()
 {
+    if (delayActive) // Check if delay is active
+    {
+        auto currentTime = timer.now();
+        if (currentTime - delayStartTime >= delayDuration)
+        {
+            delayActive = false;
+            isPaused = false;
+            if (fish.getBoids().empty()) // If all the fish have been eaten
+            {
+                popScene();
+                pushScene(winScene);
+            }
+            else if (!eatenGreenCircles.empty()) // If the snake has eaten a green circle
+            {
+                popScene();
+                pushScene(loseScene);
+            }
+        }
+        return; // Skip updates during delay
+    }
+    
     if (isPaused) 
         return; // Skip updates when paused
 
     GameRunner::step();
-    if(fish.getBoids().empty()) // If all the fish have been eaten
+    if (fish.getBoids().empty() || !eatenGreenCircles.empty()) // If all the fish have been eaten or the snake has eaten a green circle
     {
-        popScene();
-        pushScene(winScene);
-    }
-    if(!eatenGreenCircles.empty()) // If the snake has eaten a green circle
-    {
-        popScene();
-        pushScene(loseScene);
+        isPaused = true; // Pause the game
+        delayActive = true; // Activate delay
+        delayStartTime = timer.now(); // Start the delay timer
     }
 }
 

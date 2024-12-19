@@ -11,8 +11,13 @@ private:
     sf::RenderWindow &window;
     std::shared_ptr<Scene> winScene;
     std::shared_ptr<Scene> loseScene;
+
     bool isPaused = false;
     sf::Keyboard::Key pauseKey; // Configurable pause key
+
+    bool delayActive = false; // Add this line
+    std::chrono::steady_clock::time_point delayStartTime; // Add this line
+    std::chrono::duration<float, std::ratio<1>> delayDuration; // Add this line
 
 public:
     RenderedGameRunner(sf::RenderWindow &window);

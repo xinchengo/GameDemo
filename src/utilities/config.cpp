@@ -14,6 +14,7 @@ void Config::loadConfig(const std::string &filename)
     // Load game settings
     gameFramerateLimit = jsonConfig["game"].value("framerateLimit", gameFramerateLimit);
     gamePauseKey = jsonConfig["game"].value("pauseKey", gamePauseKey);
+    gameDelayWhenGameIsOver = jsonConfig["game"].value("delayWhenGameIsOver", gameDelayWhenGameIsOver);
 
     // Load swarm settings
     swarmSeparationFactor = jsonConfig["swarm"].value("separationFactor", swarmSeparationFactor);

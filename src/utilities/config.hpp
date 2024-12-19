@@ -19,6 +19,7 @@ class Config
 public:
     unsigned int gameFramerateLimit;
     unsigned int gamePauseKey;
+    float gameDelayWhenGameIsOver;
 
     float swarmSeparationFactor;
     float swarmAlignmentFactor;

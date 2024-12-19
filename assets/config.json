@@ -1,7 +1,8 @@
 {
     "game": {
         "framerateLimit": 60,
-        "pauseKey": 15
+        "pauseKey": 15,
+        "delayWhenGameIsOver": 0.5
     },
     "swarm": {
         "separationFactor": 180.0,
