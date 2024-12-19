@@ -15,16 +15,9 @@ private:
     /// is added, and the first element will be removed if there is
     /// no element in queue
     std::vector<sf::Vector2f> body;
-    /// @brief Helper array to store the segments to be displayed
-    std::vector<sf::Vector2f> seg;
+    float partialGrowth;
     /// @brief Helper array for storing polygon areas capable of eating fish and green circles
     Clipper2Lib::PathsD predatorPolygons;
-    /// @brief number of elements waiting to be added to the snake
-    int queued_length;
-    /// @brief 1 out of `tightness` segments will be displayed
-    int tightness;
-
-    void extractSegments();
 
     /**
      * @brief Helper function to extract all the regions that are in eating state.
@@ -75,21 +68,29 @@ private:
      * enclose a region in predator mode.
      */
     bool segmentConnectingEnds();
+    /**
+     * @brief Helper function to calculate the maximum difference between 
+     * `dis2(body[i], body[i-1])` and the desired distance
+     * @return The maximum difference
+     * @note Used for debugging
+     */
+    float calculateMaxDiff();
 
 public:
     Snake(int length);
     Snake(sf::Vector2f position, int length);
     sf::Vector2f headPos();
     std::vector<sf::Vector2f> &getPredatorList();
-    void step();
+    void step(float time);
     void render(sf::RenderWindow& window);
-    void setVelocityFromMousePos(sf::RenderWindow& window);
+    void setVelocityFromMousePos(sf::RenderWindow& window, float time);
     /**
      * @brief Lengthen the snake by 'count' segments
      * 
      * @param count 
      */
     void lengthen(int count);
+    void lengthen(float length);
     /**
      * @brief Determine whether a point has been eaten by the snake
      * 

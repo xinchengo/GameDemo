@@ -56,6 +56,10 @@ float cross(sf::Vector2f, sf::Vector2f);
 /// @return The value of a.x * b.x + a.y * b.y
 float dot(sf::Vector2f, sf::Vector2f);
 
+/// @brief Calculate the projection of vector `a` onto vector `b`
+/// @return The vector projected onto `b`
+sf::Vector2f projectedOnto(sf::Vector2f, sf::Vector2f);
+
 /// @brief Normalize the length of vector `a` to `desiredLength`
 /// @return The vector normalized to desiredLength
 sf::Vector2f normalizeVec(sf::Vector2f a, float desiredLength);

@@ -31,13 +31,13 @@ private:
     std::vector<Boid> boids;
     std::vector<sf::Vector2f> predators;
     
-    void avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
-    void avoidPredators(Boid &boid);
-    void matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
-    void flyTowardsCenter(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids);
+    void avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time);
+    void avoidPredators(Boid &boid, float time);
+    void matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time);
+    void flyTowardsCenter(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time);
     /// @brief Helper function to nudge a boid back if it gets too close to the edge
     void clampVelocity(Boid &boid);
-    void keepWithinBounds(Boid& boid);
+    void keepWithinBounds(Boid& boid, float time);
     /**
      * @brief Helper function to extract all the boids within `dis` of `center`
      * 
@@ -47,7 +47,7 @@ private:
      */
     const std::vector<std::reference_wrapper<Boid>> extractNearbyBoids(Boid &center, float dis);
     /// @brief Helper function to update the acceleration of all the boids.
-    void updateAcceleration();
+    void updateAcceleration(float time);
 public:
     Swarm(float width, float height);
     /**
@@ -62,14 +62,15 @@ public:
      * according to function `hasEaten`.
      * 
      * @param hasEaten the criteria of being eaten
+     * @return the number of boids eaten
      */
-    void removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten);
+    int removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten);
     /**
      * @brief Set `predators` as the list of predators
      * 
      * @param predators the list of predators
      */
     void setPredators(std::vector<sf::Vector2f> &predators);
-    void step();
+    void step(float time);
     void render(sf::RenderWindow &window);
 };

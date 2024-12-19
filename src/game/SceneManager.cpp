@@ -34,7 +34,7 @@ void SceneManager::update()
     }
     if (!scenes.empty()) 
     {
-        
+        currentScene()->markFrame();
         currentScene()->eventManager();
         currentScene()->step();  
         currentScene()->render();  

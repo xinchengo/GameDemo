@@ -12,9 +12,9 @@ GreenCircle::GreenCircle(sf::Vector2f position)
     velocity = randVecWithLength(speed);
 }
 
-void GreenCircle::step()
+void GreenCircle::step(float time)
 {
-    center += velocity;
+    center += velocity * time;
 }
 
 void GreenCircle::render(sf::RenderWindow &window)

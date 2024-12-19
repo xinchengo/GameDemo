@@ -7,6 +7,8 @@
 #include <variant>
 #include <optional>
 
+#include "utilities/properties.hpp"
+
 class Scene;
 
 /***
@@ -25,7 +27,7 @@ struct SceneEvent
     std::variant<std::monostate, std::shared_ptr<Scene>> nextScene;
 };
 
-class Scene  
+class Scene : virtual public HasTimer
 {  
 public:  
     std::queue<SceneEvent> events;

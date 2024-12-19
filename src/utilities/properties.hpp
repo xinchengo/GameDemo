@@ -1,9 +1,27 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <chrono>
 
 #include "config.hpp"
 #include "mathUtils.hpp"
+
+/// @brief Property of an object for having a timer
+class HasTimer
+{
+protected:
+    std::chrono::steady_clock timer;
+    std::chrono::steady_clock::time_point lastFrame;
+    float frameDuration;
+public:
+    HasTimer() {lastFrame = timer.now(); }
+    void markFrame()
+    {
+        auto currentFrame = timer.now();
+        frameDuration = std::chrono::duration<float, std::ratio<1>>(currentFrame - lastFrame).count();
+        lastFrame = currentFrame;
+    }
+};
 
 /// @brief Property of an object for having a center
 class HasCenter
