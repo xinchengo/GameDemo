@@ -27,6 +27,7 @@ public:
     float swarmAvoidThresholdRange;
     float swarmSpeedLimit;
     float swarmEdgeRange;
+    float swarmDisappearTimeAfterEaten;
     float snakeSpeed;
     float snakeCircleSize;
     float snakeSegmentSpacing;

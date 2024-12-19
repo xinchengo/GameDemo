@@ -19,6 +19,14 @@ public:
     Boid(sf::Vector2f bounds);
 };
 
+class DeadBoid : public Boid
+{
+public:
+    float disappearTime;
+    DeadBoid();
+    DeadBoid(Boid &boid);
+};
+
 /**
  * @brief Class for the simulation of the swarm of fish 
  * 
@@ -29,6 +37,7 @@ private:
     float width, height;
 
     std::vector<Boid> boids;
+    std::vector<DeadBoid> deadBoids;
     std::vector<sf::Vector2f> predators;
     
     void avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time);
@@ -48,6 +57,8 @@ private:
     const std::vector<std::reference_wrapper<Boid>> extractNearbyBoids(Boid &center, float dis);
     /// @brief Helper function to update the acceleration of all the boids.
     void updateAcceleration(float time);
+    /// @brief Decrement all `disappearTime` of all dead boids
+    void decrementDeadBoids(float time);
 public:
     Swarm(float width, float height);
     /**

@@ -11,7 +11,8 @@
         "visualRange": 75.0,
         "avoidThresholdRange": 20.0,
         "speedLimit": 180.0,
-        "edgeRange": 100.0
+        "edgeRange": 100.0,
+        "disappearTimeAfterEaten": 1.0
     },
     "snake": {
         "speed": 120.0,

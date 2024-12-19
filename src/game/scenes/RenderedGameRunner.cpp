@@ -43,7 +43,6 @@ void RenderedGameRunner::render()
     // {
     //     fish->render(window);
     // }
-    fish.render(window);
     for(auto &circ : greenCircles)
     {
         circ->render(window);
@@ -52,6 +51,7 @@ void RenderedGameRunner::render()
     {
         snake->render(window);
     }
+    fish.render(window);
 }
 
 void RenderedGameRunner::bindWinScene(std::shared_ptr<Scene> scene)

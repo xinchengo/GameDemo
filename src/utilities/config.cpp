@@ -24,6 +24,7 @@ void Config::loadConfig(const std::string &filename)
     swarmAvoidThresholdRange = jsonConfig["swarm"].value("avoidThresholdRange", swarmAvoidThresholdRange);
     swarmSpeedLimit = jsonConfig["swarm"].value("speedLimit", swarmSpeedLimit);
     swarmEdgeRange = jsonConfig["swarm"].value("edgeRange", swarmEdgeRange);
+    swarmDisappearTimeAfterEaten = jsonConfig["swarm"].value("disappearTimeAfterEaten", swarmDisappearTimeAfterEaten);
 
     // Load snake settings
     snakeSpeed = jsonConfig["snake"].value("speed", snakeSpeed);

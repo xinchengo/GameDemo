@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 Boid::Boid() {}
 Boid::Boid(sf::Vector2f bounds)
@@ -21,20 +22,28 @@ const std::vector<Boid> &Swarm::getBoids()
     return boids;
 }
 
-int Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten)
+int Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)>& hasEaten)
 {
-    // Move all eaten boids to the end of the vector
-    auto new_end = std::remove_if(boids.begin(), boids.end(), [&](auto& boid)
-    {
-        return hasEaten(boid.getCenter());  // Check if the boid has been eaten
-    });
-    
-    // Count number of boids that will be removed
-    int removedCount = static_cast<int>(std::distance(new_end, boids.end()));
-    
-    // Remove the eaten boids from the vector
-    boids.erase(new_end, boids.end());
-    
+    // Partition boids into active and eaten
+    auto partitionIt = std::partition(boids.begin(), boids.end(),
+        [&](const Boid& boid) { return !hasEaten(boid.center); });
+
+    // Calculate number of removed boids
+    int removedCount = static_cast<int>(std::distance(partitionIt, boids.end()));
+
+    // Move eaten boids to deadBoids
+    deadBoids.insert(deadBoids.end(),
+        std::make_move_iterator(partitionIt),
+        std::make_move_iterator(boids.end()));
+
+    // Erase eaten boids from boids vector
+    boids.erase(partitionIt, boids.end());
+
+    // Remove dead boids with negative disappearTime
+    deadBoids.erase(std::remove_if(deadBoids.begin(), deadBoids.end(),
+        [&](const DeadBoid& deadBoid) { return deadBoid.disappearTime < 0.0f; }),
+        deadBoids.end());
+
     return removedCount;
 }
 
@@ -46,6 +55,7 @@ void Swarm::setPredators(std::vector<sf::Vector2f> &predatorList)
 void Swarm::step(float time)
 {
     updateAcceleration(time);
+    decrementDeadBoids(time);
 }
 
 void Swarm::render(sf::RenderWindow &window)
@@ -73,6 +83,23 @@ void Swarm::render(sf::RenderWindow &window)
         tri.append(sf::Vertex(p1, sf::Color::Red));
         tri.append(sf::Vertex(p2, sf::Color::Red));
         tri.append(sf::Vertex(p3, sf::Color::Red));
+    }
+
+    window.draw(tri);
+
+    tri.clear();
+    
+    for(auto &deadBoid : deadBoids)
+    {
+        sf::Vector2f p1 = deadBoid.getCenter(), v = deadBoid.getVelocity();
+        if(v == sf::Vector2f(0.0f, 0.0f))
+            v = sf::Vector2f(1.0f, 0.0f);
+        sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), CONST::PI/18); 
+        sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -CONST::PI/18);
+
+        tri.append(sf::Vertex(p1, sf::Color::White));
+        tri.append(sf::Vertex(p2, sf::Color::White));
+        tri.append(sf::Vertex(p3, sf::Color::White));
     }
 
     window.draw(tri);
@@ -109,6 +136,14 @@ void Swarm::updateAcceleration(float time)
         keepWithinBounds(boid, time);
 
         boid.center = boid.center + boid.velocity * time;
+    }
+}
+
+void Swarm::decrementDeadBoids(float time)
+{
+    for(auto &deadBoid : deadBoids)
+    {
+        deadBoid.disappearTime -= time;
     }
 }
 
@@ -188,3 +223,7 @@ void Swarm::keepWithinBounds(Boid &boid, float time)
         boid.velocity.y -= config.swarmTurnFactor * time;
     }
 }
+
+DeadBoid::DeadBoid() : Boid(), disappearTime(config.swarmDisappearTimeAfterEaten) {}
+
+DeadBoid::DeadBoid(Boid &boid) : Boid(boid), disappearTime(config.swarmDisappearTimeAfterEaten) {}
