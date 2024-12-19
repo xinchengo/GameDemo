@@ -115,18 +115,17 @@ std::vector<sf::Vector2f> &Snake::getPredatorList()
 {
     return body;
 }
-void Snake::step()
+void Snake::step(float time)
 {
-    sf::Vector2f currentVelocity = velocity;
+    sf::Vector2f deltaX = velocity * time;
     // Move the head
-    body.front() += currentVelocity;
+    body.front() += deltaX;
     
     // Move the rest of the segments
     for(size_t i = 1; i < body.size(); i++)
     {
-        currentVelocity = - currentVelocity
-            + 2.0f * projectedOnto(currentVelocity, body[i - 1] - body[i]);
-        body[i] += currentVelocity;
+        deltaX = - deltaX + 2.0f * projectedOnto(deltaX, body[i - 1] - body[i]);
+        body[i] += deltaX;
     }
     // Note that because floating point errors accumulate, the actual distance
     // between the segments may not be exactly `CONST::SNAKE_SEGMENT_SPACING`,
@@ -171,7 +170,7 @@ void Snake::render(sf::RenderWindow& window)
         window.draw(shape);
     }
 }
-void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
+void Snake::setVelocityFromMousePos(sf::RenderWindow& window, float time)
 {
     sf::Vector2i pixelPos = sf::Mouse::getPosition(window);
     sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
@@ -179,13 +178,14 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
     sf::Vector2f id = worldPos - headPos(), rd = velocity;
 
     float d = angleDifference(id, velocity);
-    if (d > 0.05f)
+    float maxTurnAngle = CONST::SNAKE_MAX_TURN_ANGLE * time;
+    if (d > maxTurnAngle)
     {
-        velocity = rotate(velocity, 0.05f);
+        velocity = rotate(velocity, maxTurnAngle);
     }
-    else if (d < 0.05f)
+    else if (d < maxTurnAngle)
     {
-        velocity = rotate(velocity, -0.05f);
+        velocity = rotate(velocity, -maxTurnAngle);
     }
     else
     {

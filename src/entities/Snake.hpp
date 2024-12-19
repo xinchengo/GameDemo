@@ -74,9 +74,9 @@ public:
     Snake(sf::Vector2f position, int length);
     sf::Vector2f headPos();
     std::vector<sf::Vector2f> &getPredatorList();
-    void step();
+    void step(float time);
     void render(sf::RenderWindow& window);
-    void setVelocityFromMousePos(sf::RenderWindow& window);
+    void setVelocityFromMousePos(sf::RenderWindow& window, float time);
     /**
      * @brief Lengthen the snake by 'count' segments
      * 

@@ -9,6 +9,6 @@ class GreenCircle : public HasCenter, public HasVelocity
 private:
 public:
     GreenCircle(sf::Vector2f position);
-    void step();
+    void step(float time);
     void render(sf::RenderWindow& window);
 };

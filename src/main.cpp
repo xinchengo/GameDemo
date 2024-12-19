@@ -62,8 +62,8 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
 
-    window.setVerticalSyncEnabled(true);
-    // window.setFramerateLimit(1);
+    // window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(CONST::GAME_FRAMERATE_LIMIT);
 
     bool paused = false;
 

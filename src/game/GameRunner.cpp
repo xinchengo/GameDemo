@@ -14,7 +14,7 @@ uint8_t GameRunner::exceedBoundary(sf::Vector2f pos)
 }
 
 GameRunner::GameRunner(float width, float height) : 
-    width(width), height(height), snake(), frameNumber(0), fish(width, height) { }
+    width(width), height(height), snake(), fish(width, height) {}
 
 void GameRunner::newFish(int cnt)
 {
@@ -34,20 +34,19 @@ void GameRunner::newSnake(sf::Vector2f position, int length)
 }
 void GameRunner::step()
 {
-    frameNumber++;
     // the snake moves
     if(snake) // if the snake exists
     {
-        snake->step();
+        snake->step(frameDuration);
         // set the snake as a list of predators
         fish.setPredators(snake->getPredatorList());
     }
     // the fish moves
-    fish.step();
+    fish.step(frameDuration);
     // The greenCircle moves
     for(auto &circ : greenCircles)
     {
-        circ->step();
+        circ->step(frameDuration);
         // the green circle bounces on hitting the boundary
         circ->bounce(exceedBoundary(circ->getCenter()));
     }

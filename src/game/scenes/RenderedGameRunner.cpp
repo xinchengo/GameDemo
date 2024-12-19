@@ -22,7 +22,7 @@ void RenderedGameRunner::eventManager()
 {
     if(snake)
     {
-        snake->setVelocityFromMousePos(window);
+        snake->setVelocityFromMousePos(window, frameDuration);
     }
     sf::Event event;
     while(window.pollEvent(event));
