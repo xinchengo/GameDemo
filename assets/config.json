@@ -2,7 +2,10 @@
     "game": {
         "framerateLimit": 60,
         "pauseKey": 15,
-        "delayWhenGameIsOver": 0.5
+        "delayWhenGameIsOver": 0.5,
+        "gameWindowWidth": 1280,
+        "gameWindowHeight": 720,
+        "windowTitle": "Twisty Snake & Wavy Fish"
     },
     "swarm": {
         "separationFactor": 180.0,

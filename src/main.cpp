@@ -30,7 +30,8 @@ int main()
     config.loadConfig("./assets/config.json");
     assetManager.loadAssets("./assets/assets.json");
 
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(config.gameWindowWidth, config.gameWindowHeight), 
+        sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
 
     // window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(config.gameFramerateLimit);

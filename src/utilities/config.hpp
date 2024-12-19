@@ -20,6 +20,9 @@ public:
     unsigned int gameFramerateLimit;
     unsigned int gamePauseKey;
     float gameDelayWhenGameIsOver;
+    unsigned int gameWindowWidth;
+    unsigned int gameWindowHeight;
+    std::string gameWindowTitle;
 
     float swarmSeparationFactor;
     float swarmAlignmentFactor;

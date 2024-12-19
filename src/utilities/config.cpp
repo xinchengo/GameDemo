@@ -1,6 +1,8 @@
 #include "config.hpp"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <locale>
+#include <codecvt>
 
 // Global configuration object
 Config config;
@@ -15,6 +17,9 @@ void Config::loadConfig(const std::string &filename)
     gameFramerateLimit = jsonConfig["game"].value("framerateLimit", gameFramerateLimit);
     gamePauseKey = jsonConfig["game"].value("pauseKey", gamePauseKey);
     gameDelayWhenGameIsOver = jsonConfig["game"].value("delayWhenGameIsOver", gameDelayWhenGameIsOver);
+    gameWindowWidth = jsonConfig["game"].value("gameWindowWidth", gameWindowWidth);
+    gameWindowHeight = jsonConfig["game"].value("gameWindowHeight", gameWindowHeight);
+    gameWindowTitle = jsonConfig["game"].value("windowTitle", gameWindowTitle);
 
     // Load swarm settings
     swarmSeparationFactor = jsonConfig["swarm"].value("separationFactor", swarmSeparationFactor);
