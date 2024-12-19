@@ -27,7 +27,6 @@ public:
 
     StartScene(sf::RenderWindow &window) : window(window)
     {
-        auto& assetManager = AssetManager::getInstance();
         title.setTexture(assetManager.texture.get("gameTitle"), true);
         title.setOrigin(title.getGlobalBounds().getSize() * 0.5f);
         title.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.2f);

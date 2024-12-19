@@ -80,14 +80,8 @@ class AssetManager
 public:
     TextureManager texture;
     FontManager font;
-
-    /**  
-     * @brief Retrieves the instance of the AssetManager.  
-     *   
-     * This method implements the singleton pattern to ensure that there  
-     * is only one instance of the AssetManager throughout the game.  
-     *   
-     * @return Reference to the single instance of AssetManager.  
-     */  
-    static AssetManager& getInstance();
+    
+    void loadAssets(std::string fileName);
 };
+
+extern AssetManager assetManager;

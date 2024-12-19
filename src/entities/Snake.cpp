@@ -19,7 +19,7 @@ void Snake::extractEnclosedParts()
         snake.back().emplace_back(toPoint<double>(body.front()));
         snake.back().emplace_back(toPoint<double>(body.back()));
     }
-    snake = InflatePaths(snake, CONST::SNAKE_CIRCLE_SIZE, JoinType::Round, EndType::Round);
+    snake = InflatePaths(snake, config.snakeCircleSize, JoinType::Round, EndType::Round);
     // Now within it stores the polygons representing the region covered by the snake
     
     ClipperD clipper;
@@ -68,9 +68,9 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
         vertex0.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
         vertex1.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
         vertex2.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
-        vertex0.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
-        vertex1.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
-        vertex2.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
+        vertex0.color = sf::Color(config.snakePolygonIndicatorColor);
+        vertex1.color = sf::Color(config.snakePolygonIndicatorColor);
+        vertex2.color = sf::Color(config.snakePolygonIndicatorColor);
 
         triangleVertices.append(vertex0);
         triangleVertices.append(vertex1);
@@ -100,24 +100,24 @@ bool Snake::intersect()
 }
 float Snake::snakeLength()
 {
-    return body.size() * CONST::SNAKE_SEGMENT_SPACING;
+    return body.size() * config.snakeSegmentSpacing;
 }
 bool Snake::segmentConnectingEnds()
 {
     if(Snake::intersect())
         return false;
     else if(dis2(body.front(), body.back())
-        < CONST::SNAKE_COEFFICIENT_OF_PREDATOR_MODE * snakeLength())
+        < config.snakeCoefficientOfPredatorMode * snakeLength())
         return true;
     else
         return false;
 }
 Snake::Snake(int length)
 {
-    velocity = sf::Vector2f(0.f, -CONST::SNAKE_SPEED);
+    velocity = sf::Vector2f(0.f, -config.snakeSpeed);
     for (int i = 0; i < length; i++)
     {
-        body.emplace_back(0.f, 0.f + CONST::SNAKE_SEGMENT_SPACING * i);
+        body.emplace_back(0.f, 0.f + config.snakeSegmentSpacing * i);
     }
 }
 Snake::Snake(sf::Vector2f position, int length) : Snake(length)
@@ -158,7 +158,7 @@ float Snake::calculateMaxDiff()
     float maxDiff = 0.0f;
     for (size_t i = 1; i < body.size(); ++i)
     {
-        float diff = std::abs(dis2(body[i], body[i - 1]) - CONST::SNAKE_SEGMENT_SPACING);
+        float diff = std::abs(dis2(body[i], body[i - 1]) - config.snakeSegmentSpacing);
         if (diff > maxDiff)
         {
             maxDiff = diff;
@@ -172,8 +172,6 @@ void Snake::render(sf::RenderWindow& window)
 
     for(auto &polygon : predatorPolygons)
         drawPolygonIndicator(polygon, window);
-
-    auto& assetManager = AssetManager::getInstance();
     
     sf::Sprite shape;
     shape.setTexture(assetManager.texture.get("snakeBody"), true);
@@ -193,7 +191,7 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window, float time)
     sf::Vector2f id = worldPos - headPos(), rd = velocity;
 
     float d = angleDifference(id, velocity);
-    float maxTurnAngle = CONST::SNAKE_MAX_TURN_ANGLE * time;
+    float maxTurnAngle = config.snakeMaxTurnAngle * time;
     if (d > maxTurnAngle)
     {
         velocity = rotate(velocity, maxTurnAngle);
@@ -204,7 +202,7 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window, float time)
     }
     else
     {
-        velocity = id * CONST::SNAKE_SPEED / std::hypot(id.x, id.y);
+        velocity = id * config.snakeSpeed / std::hypot(id.x, id.y);
     }
 }
 void Snake::lengthen(int count)
@@ -219,7 +217,7 @@ void Snake::lengthen(int count)
     else
     {
         // If the snake has only one segment, use the negative of the velocity normalized
-        tailDirection = normalizeVec(-velocity, CONST::SNAKE_SEGMENT_SPACING);
+        tailDirection = normalizeVec(-velocity, config.snakeSegmentSpacing);
     }
 
     // Add `count` segments to the snake

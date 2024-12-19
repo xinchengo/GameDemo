@@ -14,37 +14,6 @@
 #include "utilities/config.hpp"
 #include "utilities/AssetManager.hpp"
 
-void load_assets();
-void load_assets()
-{
-    auto& assetManager = AssetManager::getInstance();
-
-    std::ifstream assetsList("./assets/assets.json");
-    auto data = nlohmann::json::parse(assetsList);
-
-    // import textures
-    for(auto &image : data["textures"].items())
-    {
-        std::string imagePath = image.key();
-        auto& imageData = image.value();
-
-        sf::Image imageFile;
-        imageFile.loadFromFile("./assets/" + imagePath);
-
-        for(auto &texture : imageData.items()) {
-            std::string textureName = texture.key();
-            auto &textureDetails = texture.value();
-
-            int x = textureDetails["x"];
-            int y = textureDetails["y"];
-            int width = textureDetails["width"];
-            int height = textureDetails["height"];
-
-            assetManager.texture.loadFromImage(textureName, imageFile, sf::IntRect(x, y, width, height));
-        }
-    }
-}
-
 std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
 {
     auto game = std::make_shared<RenderedGameRunner>(window);
@@ -58,12 +27,13 @@ std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
 
 int main()
 {
-    load_assets();
+    config.loadConfig("./assets/config.json");
+    assetManager.loadAssets("./assets/assets.json");
 
     sf::RenderWindow window(sf::VideoMode(1280, 720), "SFML works!");
 
     // window.setVerticalSyncEnabled(true);
-    window.setFramerateLimit(CONST::GAME_FRAMERATE_LIMIT);
+    window.setFramerateLimit(config.gameFramerateLimit);
 
     bool paused = false;
 

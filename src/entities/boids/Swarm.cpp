@@ -7,7 +7,7 @@ Boid::Boid() {}
 Boid::Boid(sf::Vector2f bounds)
 {
     setCenter(randPointInScreen(bounds.x, bounds.y));
-    setRandomVelocity(randBetween(0.0f, 10.0f * CONST::SWARM_SPEED_LIMIT));
+    setRandomVelocity(randBetween(0.0f, 10.0f * config.swarmSpeedLimit));
 }
 
 void Swarm::createBoids(int cnt)
@@ -98,8 +98,8 @@ void Swarm::updateAcceleration(float time)
 {
     for(auto &boid : boids)
     {
-        auto nearbyBoids = extractNearbyBoids(boid, CONST::SWARM_VISUAL_RANGE);
-        auto boidsToAvoid = extractNearbyBoids(boid, CONST::SWARM_AVOID_THRESHOLD_RANGE);
+        auto nearbyBoids = extractNearbyBoids(boid, config.swarmVisualRange);
+        auto boidsToAvoid = extractNearbyBoids(boid, config.swarmAvoidThresholdRange);
 
         flyTowardsCenter(boid, nearbyBoids, time);
         avoidOthers(boid, boidsToAvoid, time);
@@ -124,7 +124,7 @@ void Swarm::avoidOthers(Boid &boid, std::vector<std::reference_wrapper<Boid>> &n
         repulsionSum += boid.center - neighbor.center;
     }
     // repulsionSum /= float(nearbyBoids.size());
-    boid.velocity += repulsionSum * CONST::SWARM_SEPARATION_FACTOR * time;
+    boid.velocity += repulsionSum * config.swarmSeparationFactor * time;
 }
 
 void Swarm::avoidPredators(Boid &boid, float time)
@@ -132,12 +132,12 @@ void Swarm::avoidPredators(Boid &boid, float time)
     sf::Vector2f replusionSum;
     for(auto &predator : predators)
     {
-        if(dis2(predator, boid.center) < CONST::SWARM_VISUAL_RANGE)
+        if(dis2(predator, boid.center) < config.swarmVisualRange)
         {
             replusionSum += boid.center - predator;
         }
     }
-    boid.velocity += replusionSum * CONST::SWARM_PREDATOR_REPLUSION_FACTOR * time;
+    boid.velocity += replusionSum * config.swarmPredatorReplusionFactor * time;
 }
 
 void Swarm::matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time)
@@ -149,7 +149,7 @@ void Swarm::matchVelocity(Boid &boid, std::vector<std::reference_wrapper<Boid>> 
     }
     if(nearbyBoids.empty() == false)
         averageVelocity /= float(nearbyBoids.size());
-    boid.velocity += (averageVelocity - boid.velocity) * CONST::SWARM_ALIGNMENT_FACTOR * time;
+    boid.velocity += (averageVelocity - boid.velocity) * config.swarmAlignmentFactor * time;
 }
 
 void Swarm::flyTowardsCenter(Boid &boid, std::vector<std::reference_wrapper<Boid>> &nearbyBoids, float time)
@@ -161,30 +161,30 @@ void Swarm::flyTowardsCenter(Boid &boid, std::vector<std::reference_wrapper<Boid
     }
     if(nearbyBoids.empty() == false)
         centerOfMass /= float(nearbyBoids.size());
-    boid.velocity += (centerOfMass - boid.center) * CONST::SWARM_COHESION_FACTOR * time;
+    boid.velocity += (centerOfMass - boid.center) * config.swarmCohesionFactor * time;
 }
 
 void Swarm::clampVelocity(Boid &boid)
 {
-    boid.velocity = clampVec(boid.velocity, CONST::SWARM_SPEED_LIMIT);
+    boid.velocity = clampVec(boid.velocity, config.swarmSpeedLimit);
 }
 
 void Swarm::keepWithinBounds(Boid &boid, float time)
 {
-    if(boid.center.x < CONST::SWARM_EDGE_RANGE)
+    if(boid.center.x < config.swarmEdgeRange)
     {
-        boid.velocity.x += CONST::SWARM_TURN_FACTOR * time;
+        boid.velocity.x += config.swarmTurnFactor * time;
     }
-    else if(boid.center.x > width - CONST::SWARM_EDGE_RANGE)
+    else if(boid.center.x > width - config.swarmEdgeRange)
     {
-        boid.velocity.x -= CONST::SWARM_TURN_FACTOR * time;
+        boid.velocity.x -= config.swarmTurnFactor * time;
     }
-    if(boid.center.y < CONST::SWARM_EDGE_RANGE)
+    if(boid.center.y < config.swarmEdgeRange)
     {
-        boid.velocity.y += CONST::SWARM_TURN_FACTOR * time;
+        boid.velocity.y += config.swarmTurnFactor * time;
     }
-    else if(boid.center.y > height - CONST::SWARM_EDGE_RANGE)
+    else if(boid.center.y > height - config.swarmEdgeRange)
     {
-        boid.velocity.y -= CONST::SWARM_TURN_FACTOR * time;
+        boid.velocity.y -= config.swarmTurnFactor * time;
     }
 }
