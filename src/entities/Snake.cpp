@@ -25,46 +25,66 @@ void Snake::extractEnclosedParts()
     ClipperD clipper;
     clipper.AddSubject(snake);
     clipper.PreserveCollinear(false);
-    // extract the enclosed (NonZero) parts of the region ENCIRCLEED by the snake
-    clipper.Execute(ClipType::Union, FillRule::NonZero, predatorPolygons);
+    
+    // Temporary storage for all polygons
+    PolyTreeD allPolygons;
+    clipper.Execute(ClipType::Union, FillRule::NonZero, allPolygons);
+    
+    // Extract only outer polygons (depth = 0)
+    predatorPolygons.clear();
+    for (const auto& child : allPolygons)
+    {
+        if (child->Polygon().size() >= 3)
+        {  // Skip degenerate polygons
+            predatorPolygons.emplace_back(child->Polygon());
+        }
+    }
 
-    // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
+    // Apply post-processing
     predatorPolygons = InflatePaths(predatorPolygons, -0.25, JoinType::Round, EndType::Polygon);
     predatorPolygons = SimplifyPaths(predatorPolygons, 0.5);
-
-    // Remove all degenerate polygons (vertices < 3)
-    predatorPolygons.erase(
-    std::remove_if(predatorPolygons.begin(), predatorPolygons.end(), 
-                   [](const auto& polygon) { return polygon.size() < 3; }),
-    predatorPolygons.end());
 }
 void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
 {
-    std::vector<p2t::Point*> seq;
-    for(auto &i : polygon)
+    // Convert polygon points to poly2tri points
+    std::vector<p2t::Point*> poly2triPoints;
+    for (const auto &point : polygon)
     {
-        seq.push_back(new p2t::Point((double)i.x, (double)i.y));
+        poly2triPoints.push_back(new p2t::Point(static_cast<double>(point.x), static_cast<double>(point.y)));
     }
     
-    p2t::CDT poly(seq);
-    poly.Triangulate();
-    auto triags = poly.GetTriangles();
+    // Create a constrained Delaunay triangulation (CDT) from the points
+    p2t::CDT cdt(poly2triPoints);
+    cdt.Triangulate();
+    auto triangles = cdt.GetTriangles();
 
-    for(auto &triangle : triags)
+    // Create a VertexArray to hold all the triangles
+    sf::VertexArray triangleVertices(sf::Triangles);
+
+    // Convert each triangle to SFML vertices and add to the VertexArray
+    for (const auto &triangle : triangles)
     {
-        sf::VertexArray tri(sf::Triangles, 3);
-        tri[0].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
-        tri[1].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
-        tri[2].position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
-        tri[0].color = sf::Color(0x5b9bd5ff);
-        tri[1].color = sf::Color(0x5b9bd5ff);
-        tri[2].color = sf::Color(0x5b9bd5ff);
-        
-        window.draw(tri);
+        sf::Vertex vertex0, vertex1, vertex2;
+        vertex0.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
+        vertex1.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
+        vertex2.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
+        vertex0.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
+        vertex1.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
+        vertex2.color = sf::Color(CONST::SNAKE_POLYGON_INDICATOR_COLOR);
+
+        triangleVertices.append(vertex0);
+        triangleVertices.append(vertex1);
+        triangleVertices.append(vertex2);
     }
 
-    for(auto &i : seq)
-        delete i;
+    // Draw all the triangles at once
+    window.draw(triangleVertices);
+
+    // Clean up dynamically allocated poly2tri points
+    for (auto &point : poly2triPoints)
+    {
+        delete point;
+    }
 }
 bool Snake::intersect()
 {
@@ -130,16 +150,21 @@ void Snake::step(float time)
     // Note that because floating point errors accumulate, the actual distance
     // between the segments may not be exactly `CONST::SNAKE_SEGMENT_SPACING`,
     // but in a single round, the error is negligible. (never exceeding 1e-2)
-
-    // Find the maximum difference between the actual distance
-    // of body[i] and body[i-1] and the desired distance
+    // float maxDiff = calculateMaxDiff();
+    // std::cout << "Max diff: " << maxDiff << std::endl;
+}
+float Snake::calculateMaxDiff()
+{
     float maxDiff = 0.0f;
-    for(size_t i = 1; i < body.size(); i++)
+    for (size_t i = 1; i < body.size(); ++i)
     {
-        float diff = dis2(body[i], body[i - 1]) - CONST::SNAKE_SEGMENT_SPACING;
-        maxDiff = std::max(maxDiff, std::abs(diff));
+        float diff = std::abs(dis2(body[i], body[i - 1]) - CONST::SNAKE_SEGMENT_SPACING);
+        if (diff > maxDiff)
+        {
+            maxDiff = diff;
+        }
     }
-    std::cout << "Max diff: " << maxDiff << std::endl;
+    return maxDiff;
 }
 void Snake::render(sf::RenderWindow& window)
 {   
@@ -147,16 +172,6 @@ void Snake::render(sf::RenderWindow& window)
 
     for(auto &polygon : predatorPolygons)
         drawPolygonIndicator(polygon, window);
-
-    if(segmentConnectingEnds())
-    {
-        sf::RectangleShape line;
-        line.setFillColor(sf::Color::White);
-        line.setPosition(body.front());
-        line.setSize(sf::Vector2f(dis2(body.front(), body.back()), 3.0f));
-        line.setRotation(std::atan2((body.back()-body.front()).y, (body.back()-body.front()).x)/CONST::PI*180);
-        window.draw(line);
-    }
 
     auto& assetManager = AssetManager::getInstance();
     

@@ -68,6 +68,13 @@ private:
      * enclose a region in predator mode.
      */
     bool segmentConnectingEnds();
+    /**
+     * @brief Helper function to calculate the maximum difference between 
+     * `dis2(body[i], body[i-1])` and the desired distance
+     * @return The maximum difference
+     * @note Used for debugging
+     */
+    float calculateMaxDiff();
 
 public:
     Snake(int length);

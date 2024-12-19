@@ -1,5 +1,7 @@
 #pragma once
 
+#include<SFML/Graphics.hpp>
+
 #include<array>
 #include<string>
 
@@ -42,6 +44,8 @@ namespace CONST
     constexpr float SNAKE_MAX_TURN_ANGLE = 3.f;
 
     constexpr float SNAKE_COEFFICIENT_OF_PREDATOR_MODE = 0.8f;
+
+    constexpr unsigned int SNAKE_POLYGON_INDICATOR_COLOR = 0x5b9bd5ff;
 
     constexpr float GREEN_CIRCLE_SPEED_MIN = 10.0f;
 
