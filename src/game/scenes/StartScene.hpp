@@ -7,6 +7,8 @@
 #include "game/scenes/RenderedGameRunner.hpp"
 #include "utilities/AssetManager.hpp"
 
+std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window);
+
 class StartScene : public Scene
 {
 private:
@@ -20,37 +22,16 @@ private:
     sf::Sprite settingsButton;
     sf::Sprite exitButton;
     sf::Sprite aboutButton;
-
-    std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> newGame;
+    
+    void handleResize(sf::Vector2u size);
     
 public:
 
-    StartScene(sf::RenderWindow &window) : window(window)
-    {
-        title.setTexture(assetManager.texture.get("gameTitle"), true);
-        title.setOrigin(title.getGlobalBounds().getSize() * 0.5f);
-        title.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.2f);
-
-        startButton.setTexture(assetManager.texture.get("startGame"), true);
-        startButton.setOrigin(startButton.getGlobalBounds().getSize() * 0.5f);
-        startButton.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.4f);
-
-        settingsButton.setTexture(assetManager.texture.get("gameSettings"), true);
-        settingsButton.setOrigin(settingsButton.getGlobalBounds().getSize() * 0.5f);
-        settingsButton.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.55f);
-
-        exitButton.setTexture(assetManager.texture.get("exitGame"), true);
-        exitButton.setOrigin(exitButton.getGlobalBounds().getSize() * 0.5f);
-        exitButton.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.70f);
-
-        aboutButton.setTexture(assetManager.texture.get("aboutPage"), true);
-        aboutButton.setOrigin(aboutButton.getGlobalBounds().getSize() * 0.5f);
-        aboutButton.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.85f);
-    }
-    void bindNewGameFunction(std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> func);
+    StartScene(sf::RenderWindow &window);
     void bindSettingsScene(std::shared_ptr<Scene> scene);
     void bindAboutScene(std::shared_ptr<Scene> scene);
 
+    void onActivate() override;
     void render() override;
     void step() override;
     void eventManager() override;
