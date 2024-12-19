@@ -1,0 +1,31 @@
+{
+    "game": {
+        "framerateLimit": 60
+    },
+    "swarm": {
+        "separationFactor": 180.0,
+        "alignmentFactor": 0.6,
+        "cohesionFactor": 7.2,
+        "turnFactor": 360.0,
+        "predatorRepulsionFactor": 180.0,
+        "visualRange": 75.0,
+        "avoidThresholdRange": 20.0,
+        "speedLimit": 180.0,
+        "edgeRange": 100.0
+    },
+    "snake": {
+        "speed": 120.0,
+        "circleSize": 20.0,
+        "segmentSpacing": 20.0,
+        "growthPerFish": 0.25,
+        "maxTurnAngle": 3.0,
+        "coefficientOfPredatorMode": 0.8,
+        "polygonIndicatorColor": 1536939519
+    },
+    "greenCircle": {
+        "speedMin": 10.0,
+        "speedMax": 60.0,
+        "radius": 20.0,
+        "outlineThickness": 5.0
+    }
+}

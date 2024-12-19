@@ -13,7 +13,6 @@ private:
 public:
     WinScene(sf::RenderWindow &window) : window(window)
     {
-        auto& assetManager = AssetManager::getInstance();
         text.setTexture(assetManager.texture.get("youWin"), true);
         text.setOrigin(text.getGlobalBounds().getSize() * 0.5f);
         text.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.5f);

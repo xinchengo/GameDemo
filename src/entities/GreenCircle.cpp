@@ -8,7 +8,7 @@
 GreenCircle::GreenCircle(sf::Vector2f position)
 {
     center = position;
-    float speed = randBetween(CONST::GREEN_CIRCLE_SPEED_MIN, CONST::GREEN_CIRCLE_SPEED_MAX);
+    float speed = randBetween(config.greenCircleSpeedMin, config.greenCircleSpeedMax);
     velocity = randVecWithLength(speed);
 }
 
@@ -18,9 +18,7 @@ void GreenCircle::step(float time)
 }
 
 void GreenCircle::render(sf::RenderWindow &window)
-{
-    auto& assetManager = AssetManager::getInstance();
-    
+{   
     sf::Sprite shape;
     shape.setTexture(assetManager.texture.get("greenCircle"), true);
     shape.setOrigin(shape.getGlobalBounds().getSize() * 0.5f);

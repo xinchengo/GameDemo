@@ -1,5 +1,11 @@
 #include "AssetManager.hpp"
 
+#include <fstream>
+#include <nlohmann/json.hpp>
+#include <SFML/Graphics.hpp>
+
+AssetManager assetManager;
+
 bool TextureManager::loadFromFile(const std::string &name, const std::string &filePath)
 {
     sf::Texture texture;  
@@ -46,8 +52,30 @@ sf::Font &FontManager::get(const std::string &name)
     return fonts.at(name);
 }
 
-AssetManager &AssetManager::getInstance()
+void AssetManager::loadAssets(std::string fileName)
 {
-    static AssetManager instance; // Guaranteed to be destroyed.  
-    return instance;                 // Instantiated on first use. 
+    std::ifstream assetsList(fileName);
+    auto data = nlohmann::json::parse(assetsList);
+
+    // import textures
+    for(auto &image : data["textures"].items())
+    {
+        std::string imagePath = image.key();
+        auto& imageData = image.value();
+
+        sf::Image imageFile;
+        imageFile.loadFromFile("./assets/" + imagePath);
+
+        for(auto &textureTerm : imageData.items()) {
+            std::string textureName = textureTerm.key();
+            auto &textureDetails = textureTerm.value();
+
+            int x = textureDetails["x"];
+            int y = textureDetails["y"];
+            int width = textureDetails["width"];
+            int height = textureDetails["height"];
+
+            texture.loadFromImage(textureName, imageFile, sf::IntRect(x, y, width, height));
+        }
+    }
 }
