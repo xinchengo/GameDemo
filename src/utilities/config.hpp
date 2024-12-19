@@ -18,6 +18,8 @@ class Config
 {
 public:
     unsigned int gameFramerateLimit;
+    unsigned int gamePauseKey;
+
     float swarmSeparationFactor;
     float swarmAlignmentFactor;
     float swarmCohesionFactor;
@@ -28,6 +30,7 @@ public:
     float swarmSpeedLimit;
     float swarmEdgeRange;
     float swarmDisappearTimeAfterEaten;
+
     float snakeSpeed;
     float snakeCircleSize;
     float snakeSegmentSpacing;
@@ -35,6 +38,7 @@ public:
     float snakeMaxTurnAngle;
     float snakeCoefficientOfPredatorMode;
     unsigned int snakePolygonIndicatorColor;
+
     float greenCircleSpeedMin;
     float greenCircleSpeedMax;
     float greenCircleRadius;

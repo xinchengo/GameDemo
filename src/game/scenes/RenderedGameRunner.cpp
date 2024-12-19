@@ -2,10 +2,16 @@
 
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
     GameRunner((float)window.getSize().x, (float)window.getSize().y),
-    window(window) {}
+    window(window)
+{
+    pauseKey = static_cast<sf::Keyboard::Key>(config.gamePauseKey);
+}
 
 void RenderedGameRunner::step()
 {
+    if (isPaused) 
+        return; // Skip updates when paused
+
     GameRunner::step();
     if(fish.getBoids().empty()) // If all the fish have been eaten
     {
@@ -18,6 +24,7 @@ void RenderedGameRunner::step()
         pushScene(loseScene);
     }
 }
+
 void RenderedGameRunner::eventManager()
 {
     if(snake)
@@ -25,12 +32,18 @@ void RenderedGameRunner::eventManager()
         snake->setVelocityFromMousePos(window, frameDuration);
     }
     sf::Event event;
-    while(window.pollEvent(event));
+    while(window.pollEvent(event))
     {
         switch(event.type)
         {
         case sf::Event::Closed:
             window.close();
+            break;
+        case sf::Event::KeyPressed:
+            if(event.key.code == pauseKey)
+            {
+                isPaused = !isPaused; // Toggle pause state
+            }
             break;
         default:
             break;    
