@@ -13,6 +13,8 @@ void Config::loadConfig(const std::string &filename)
 
     // Load game settings
     gameFramerateLimit = jsonConfig["game"].value("framerateLimit", gameFramerateLimit);
+    gamePauseKey = jsonConfig["game"].value("pauseKey", gamePauseKey);
+    gameDelayWhenGameIsOver = jsonConfig["game"].value("delayWhenGameIsOver", gameDelayWhenGameIsOver);
 
     // Load swarm settings
     swarmSeparationFactor = jsonConfig["swarm"].value("separationFactor", swarmSeparationFactor);
@@ -24,6 +26,7 @@ void Config::loadConfig(const std::string &filename)
     swarmAvoidThresholdRange = jsonConfig["swarm"].value("avoidThresholdRange", swarmAvoidThresholdRange);
     swarmSpeedLimit = jsonConfig["swarm"].value("speedLimit", swarmSpeedLimit);
     swarmEdgeRange = jsonConfig["swarm"].value("edgeRange", swarmEdgeRange);
+    swarmDisappearTimeAfterEaten = jsonConfig["swarm"].value("disappearTimeAfterEaten", swarmDisappearTimeAfterEaten);
 
     // Load snake settings
     snakeSpeed = jsonConfig["snake"].value("speed", snakeSpeed);

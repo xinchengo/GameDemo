@@ -1,6 +1,8 @@
 {
     "game": {
-        "framerateLimit": 60
+        "framerateLimit": 60,
+        "pauseKey": 15,
+        "delayWhenGameIsOver": 0.5
     },
     "swarm": {
         "separationFactor": 180.0,
@@ -11,7 +13,8 @@
         "visualRange": 75.0,
         "avoidThresholdRange": 20.0,
         "speedLimit": 180.0,
-        "edgeRange": 100.0
+        "edgeRange": 100.0,
+        "disappearTimeAfterEaten": 1.0
     },
     "snake": {
         "speed": 120.0,

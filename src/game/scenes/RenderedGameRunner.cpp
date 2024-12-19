@@ -1,23 +1,49 @@
 #include "RenderedGameRunner.hpp"
+#include <SFML/Window/Keyboard.hpp>
 
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
     GameRunner((float)window.getSize().x, (float)window.getSize().y),
-    window(window) {}
+    window(window)
+{
+    pauseKey = static_cast<sf::Keyboard::Key>(config.gamePauseKey);
+    delayDuration = std::chrono::duration<float, std::ratio<1>>(config.gameDelayWhenGameIsOver);
+}
 
 void RenderedGameRunner::step()
 {
-    GameRunner::step();
-    if(fish.getBoids().empty()) // If all the fish have been eaten
+    if (delayActive) // Check if delay is active
     {
-        popScene();
-        pushScene(winScene);
+        auto currentTime = timer.now();
+        if (currentTime - delayStartTime >= delayDuration)
+        {
+            delayActive = false;
+            isPaused = false;
+            if (fish.getBoids().empty()) // If all the fish have been eaten
+            {
+                popScene();
+                pushScene(winScene);
+            }
+            else if (!eatenGreenCircles.empty()) // If the snake has eaten a green circle
+            {
+                popScene();
+                pushScene(loseScene);
+            }
+        }
+        return; // Skip updates during delay
     }
-    if(!eatenGreenCircles.empty()) // If the snake has eaten a green circle
+    
+    if (isPaused) 
+        return; // Skip updates when paused
+
+    GameRunner::step();
+    if (fish.getBoids().empty() || !eatenGreenCircles.empty()) // If all the fish have been eaten or the snake has eaten a green circle
     {
-        popScene();
-        pushScene(loseScene);
+        isPaused = true; // Pause the game
+        delayActive = true; // Activate delay
+        delayStartTime = timer.now(); // Start the delay timer
     }
 }
+
 void RenderedGameRunner::eventManager()
 {
     if(snake)
@@ -25,12 +51,18 @@ void RenderedGameRunner::eventManager()
         snake->setVelocityFromMousePos(window, frameDuration);
     }
     sf::Event event;
-    while(window.pollEvent(event));
+    while(window.pollEvent(event))
     {
         switch(event.type)
         {
         case sf::Event::Closed:
             window.close();
+            break;
+        case sf::Event::KeyPressed:
+            if(event.key.code == pauseKey)
+            {
+                isPaused = !isPaused; // Toggle pause state
+            }
             break;
         default:
             break;    
@@ -43,7 +75,6 @@ void RenderedGameRunner::render()
     // {
     //     fish->render(window);
     // }
-    fish.render(window);
     for(auto &circ : greenCircles)
     {
         circ->render(window);
@@ -52,6 +83,7 @@ void RenderedGameRunner::render()
     {
         snake->render(window);
     }
+    fish.render(window);
 }
 
 void RenderedGameRunner::bindWinScene(std::shared_ptr<Scene> scene)
