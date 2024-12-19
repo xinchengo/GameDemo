@@ -1,32 +1,23 @@
 #include "Snake.hpp"
-#include "utilities/config.hpp"
+
 #include "SFML/Graphics.hpp"
 #include "utilities/config.hpp"
 #include "utilities/mathUtils.hpp"
 #include "utilities/typeUtils.hpp"
 #include "utilities/AssetManager.hpp"
-#define  xxx (body.str[i+1].SnakePosition-body.str[i].SnakePosition)
-void Snake::extractSegments()
-{
-    seg.clear();
-
-    size_t ind = 0;
-    for (; ind < body.str.size(); ind += tightness)
-        seg.push_back(body.str[body.str.size()- ind - 1].SnakePosition);
-}
 
 void Snake::extractEnclosedParts()
 {
     using namespace Clipper2Lib;
     
-    PathsD snake = {toPath<double>(seg)};
+    PathsD snake = {toPath<double>(body)};
     // If the length of the snake follows a certain criteria, include the segment connecting
     // the two ends of the snake.
     if(segmentConnectingEnds() == true)
     {
         snake.emplace_back();
-        snake.back().emplace_back(toPoint<double>(seg.front()));
-        snake.back().emplace_back(toPoint<double>(seg.back()));
+        snake.back().emplace_back(toPoint<double>(body.front()));
+        snake.back().emplace_back(toPoint<double>(body.back()));
     }
     snake = InflatePaths(snake, CONST::SNAKE_CIRCLE_SIZE, JoinType::Round, EndType::Round);
     // Now within it stores the polygons representing the region covered by the snake
@@ -40,14 +31,13 @@ void Snake::extractEnclosedParts()
     // Shrink the polygon by 0.25 pixels to avoid potential problems in `drawPolygonIndicator`
     predatorPolygons = InflatePaths(predatorPolygons, -0.25, JoinType::Round, EndType::Polygon);
     predatorPolygons = SimplifyPaths(predatorPolygons, 0.5);
+
+    // Remove all degenerate polygons (vertices < 3)
+    predatorPolygons.erase(
+    std::remove_if(predatorPolygons.begin(), predatorPolygons.end(), 
+                   [](const auto& polygon) { return polygon.size() < 3; }),
+    predatorPolygons.end());
 }
-
-std::vector<sf::Vector2f> &Snake::getPredatorList()
-{
-    return seg;
-}
-
-
 void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &window)
 {
     std::vector<p2t::Point*> seq;
@@ -79,9 +69,9 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
 bool Snake::intersect()
 {
     size_t ind = 1;
-    for(; ind < seg.size() - 2; ind++)
+    for(; ind < body.size() - 2; ind++)
     {
-        if(doIntersect(seg[ind], seg[ind+1], seg.front(), seg.back()))
+        if(doIntersect(body[ind], body[ind+1], body.front(), body.back()))
         {
             return true;
         }
@@ -90,13 +80,13 @@ bool Snake::intersect()
 }
 float Snake::snakeLength()
 {
-    return seg.size() * tightness * CONST::SNAKE_SPEED;
+    return body.size() * CONST::SNAKE_SEGMENT_SPACING;
 }
 bool Snake::segmentConnectingEnds()
 {
     if(Snake::intersect())
         return false;
-    else if(dis2(body.str.front().SnakePosition, body.str.back().SnakePosition)
+    else if(dis2(body.front(), body.back())
         < CONST::SNAKE_COEFFICIENT_OF_PREDATOR_MODE * snakeLength())
         return true;
     else
@@ -105,54 +95,55 @@ bool Snake::segmentConnectingEnds()
 Snake::Snake(int length)
 {
     velocity = sf::Vector2f(0.f, -CONST::SNAKE_SPEED);
-    for (int i = length - 1; i >= 0; i--)
+    for (int i = 0; i < length; i++)
     {
-        body.str.push_back({{0.f, 0.f + CONST::SNAKE_SPEED * i},velocity});
-        
+        body.emplace_back(0.f, 0.f + CONST::SNAKE_SEGMENT_SPACING * i);
     }
-    tightness = 10;
-    queued_length = 0;
-    EatenFishNumber=0;
-    NewEat=0;
 }
 Snake::Snake(sf::Vector2f position, int length) : Snake(length)
 {
-    for(auto &point : body.str)
+    for(auto &point : body)
     {
-        point.SnakePosition+= position;
+        point += position;
     }
 }
 sf::Vector2f Snake::headPos()
 {
-    return  body.str.back().SnakePosition ;
+    return body.front();
+}
+std::vector<sf::Vector2f> &Snake::getPredatorList()
+{
+    return body;
 }
 void Snake::step()
 {
+    sf::Vector2f currentVelocity = velocity;
+    // Move the head
+    body.front() += currentVelocity;
     
-    
-    if(NewEat>=2){
-      NewEat-=2;body.str.push_back({body.str.back().SnakePosition+velocity,velocity});
-        
-        }
-        else {body.str.back().SnakePosition+=velocity;
-    for(int i=body.str.size()-2;i>=0;i--)
+    // Move the rest of the segments
+    for(size_t i = 1; i < body.size(); i++)
     {
-      //if(NewEat)body.str[i].SnakePosition  =body.str[i+1].SnakePosition - xxx/(  std::hypot(xxx.x,xxx.y)  )*(float)(1+EatenFishNumber*CONST::GROWTH_PERCENTAGE)*(float)(std::hypot(velocity.x, velocity.y));
- 
- 
- 
- 
- body.str[i].SnakePosition+=body.str[i].SnakeSpeed;
-body.str[i].SnakeSpeed=normalizeVec(sf::Vector2f (body.str[i+1].SnakePosition-body.str[i].SnakePosition) ,std::hypot(velocity.x, velocity.y) );
-       
-        }
+        currentVelocity = - currentVelocity
+            + 2.0f * projectedOnto(currentVelocity, body[i - 1] - body[i]);
+        body[i] += currentVelocity;
+    }
+    // Note that because floating point errors accumulate, the actual distance
+    // between the segments may not be exactly `CONST::SNAKE_SEGMENT_SPACING`,
+    // but in a single round, the error is negligible. (never exceeding 1e-2)
 
-}
+    // Find the maximum difference between the actual distance
+    // of body[i] and body[i-1] and the desired distance
+    float maxDiff = 0.0f;
+    for(size_t i = 1; i < body.size(); i++)
+    {
+        float diff = dis2(body[i], body[i - 1]) - CONST::SNAKE_SEGMENT_SPACING;
+        maxDiff = std::max(maxDiff, std::abs(diff));
+    }
+    std::cout << "Max diff: " << maxDiff << std::endl;
 }
 void Snake::render(sf::RenderWindow& window)
-{
-    extractSegments();
-    
+{   
     extractEnclosedParts();
 
     for(auto &polygon : predatorPolygons)
@@ -162,24 +153,21 @@ void Snake::render(sf::RenderWindow& window)
     {
         sf::RectangleShape line;
         line.setFillColor(sf::Color::White);
-        line.setPosition(seg.front());
-        line.setSize(sf::Vector2f(dis2(seg.front(), seg.back()), 3.0f));
-        line.setRotation(std::atan2((seg.back()-seg.front()).y, (seg.back()-seg.front()).x)/CONST::PI*180);
+        line.setPosition(body.front());
+        line.setSize(sf::Vector2f(dis2(body.front(), body.back()), 3.0f));
+        line.setRotation(std::atan2((body.back()-body.front()).y, (body.back()-body.front()).x)/CONST::PI*180);
         window.draw(line);
     }
 
     auto& assetManager = AssetManager::getInstance();
     
     sf::Sprite shape;
-    
     shape.setTexture(assetManager.texture.get("snakeBody"), true);
     shape.setOrigin(shape.getGlobalBounds().getSize() * 0.5f);
- shape.setScale((1+EatenFishNumber * CONST::GROWTH_PERCENTAGE) ,(1+EatenFishNumber * CONST::GROWTH_PERCENTAGE) );
- //body.unit_dis =  1+NewEat * CONST::GROWTH_PERCENTAGE;
-    for(auto &it : seg)
+
+    for(auto &it : body)
     {
         shape.setPosition(it);
-      
         window.draw(shape);
     }
 }
@@ -206,7 +194,31 @@ void Snake::setVelocityFromMousePos(sf::RenderWindow& window)
 }
 void Snake::lengthen(int count)
 {
-    queued_length += count;
+    // Handle growth of the snake
+    sf::Vector2f tailDirection;
+    if(body.size() > 1)
+    {
+        // Calculate the direction from the second last segment to the last segment
+        tailDirection = body.back() - body[body.size() - 2];
+    }
+    else
+    {
+        // If the snake has only one segment, use the negative of the velocity normalized
+        tailDirection = normalizeVec(-velocity, CONST::SNAKE_SEGMENT_SPACING);
+    }
+
+    // Add `count` segments to the snake
+    for(int i = 0; i < count; i++)
+    {
+        body.push_back(body.back() + tailDirection);
+    }
+}
+void Snake::lengthen(float length)
+{
+    partialGrowth += length;
+    int count = int(partialGrowth + CONST::FLOAT_EPS);
+    partialGrowth -= count;
+    lengthen(count);
 }
 
 bool Snake::hasEaten(sf::Vector2f point)
@@ -216,12 +228,9 @@ bool Snake::hasEaten(sf::Vector2f point)
     {
         auto result = PointInPolygon(toPoint<double>(point), polygon);
         if(result != PointInPolygonResult::IsOutside)
-        {   EatenFishNumber++;
-        NewEat+=10;
-               
+        {
             return true;   
         }
     }
     return false;
 }
-

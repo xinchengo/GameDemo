@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 #pragma once
 
 #include <SFML/Graphics.hpp>
@@ -21,20 +14,10 @@ private:
     /// On every update, a new element `body.back() + velocity`
     /// is added, and the first element will be removed if there is
     /// no element in queue
-  //  std::vector<sf::Vector2f> body;
-    /// @brief Helper array to store the segments to be displayed
-    std::vector<sf::Vector2f> seg;
+    std::vector<sf::Vector2f> body;
+    float partialGrowth;
     /// @brief Helper array for storing polygon areas capable of eating fish and green circles
     Clipper2Lib::PathsD predatorPolygons;
-    /// @brief number of elements waiting to be added to the snake
-    int queued_length;
-    /// @brief 1 out of `tightness` segments will be displayed
-    int tightness;
-
-
-
-
-void extractSegments();
 
     /**
      * @brief Helper function to extract all the regions that are in eating state.
@@ -87,21 +70,6 @@ void extractSegments();
     bool segmentConnectingEnds();
 
 public:
-
-struct  element 
-{
-sf::Vector2f  SnakePosition;
-sf::Vector2f  SnakeSpeed;
-};
-
-
-struct ext
-{
-    std::vector<struct element> str;
-    float unit_dis;
-};
-
-
     Snake(int length);
     Snake(sf::Vector2f position, int length);
     sf::Vector2f headPos();
@@ -115,6 +83,7 @@ struct ext
      * @param count 
      */
     void lengthen(int count);
+    void lengthen(float length);
     /**
      * @brief Determine whether a point has been eaten by the snake
      * 
@@ -124,8 +93,4 @@ struct ext
      * @note
      */
     bool hasEaten(sf::Vector2f point);
-    int EatenFishNumber;
-    int NewEat;
-struct ext body;
-
 };

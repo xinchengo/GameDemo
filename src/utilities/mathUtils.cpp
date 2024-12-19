@@ -36,6 +36,10 @@ float dot(sf::Vector2f a, sf::Vector2f b)
 {
     return a.x * b.x + a.y * b.y;
 }
+sf::Vector2f projectedOnto(sf::Vector2f a, sf::Vector2f b)
+{
+    return b * dot(a, b) / dot(b, b);
+}
 float length(sf::Vector2f a)
 {
     return std::hypot(a.x, a.y);

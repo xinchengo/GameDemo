@@ -20,15 +20,21 @@ const std::vector<Boid> &Swarm::getBoids()
     return boids;
 }
 
-void Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten)
+int Swarm::removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten)
 {
     // Move all eaten boids to the end of the vector
     auto new_end = std::remove_if(boids.begin(), boids.end(), [&](auto& boid)
     {
         return hasEaten(boid.getCenter());  // Check if the boid has been eaten
     });
+    
+    // Count number of boids that will be removed
+    int removedCount = static_cast<int>(std::distance(new_end, boids.end()));
+    
     // Remove the eaten boids from the vector
     boids.erase(new_end, boids.end());
+    
+    return removedCount;
 }
 
 void Swarm::setPredators(std::vector<sf::Vector2f> &predatorList)

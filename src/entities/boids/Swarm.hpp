@@ -62,8 +62,9 @@ public:
      * according to function `hasEaten`.
      * 
      * @param hasEaten the criteria of being eaten
+     * @return the number of boids eaten
      */
-    void removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten);
+    int removeBoidsEaten(const std::function<bool(sf::Vector2f)> &hasEaten);
     /**
      * @brief Set `predators` as the list of predators
      * 

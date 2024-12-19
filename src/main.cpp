@@ -51,10 +51,8 @@ std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
     game->bindLoseScene(std::make_shared<LoseScene>(window));
     game->bindWinScene(std::make_shared<WinScene>(window));
     game->newFish(100);
-    // game->newRandomFish(CONST::FISH_STRATEGY::LINEAR, 10);
-    // game->newRandomFish(CONST::FISH_STRATEGY::BASELINE, 10);
     game->newGreenCircles(3);
-    game->newSnake(sf::Vector2f(0.0, 0.0), 300);
+    game->newSnake(sf::Vector2f(0.0, 0.0), 20);
     return game;
 }
 

@@ -35,6 +35,10 @@ namespace CONST
 
     constexpr float SNAKE_CIRCLE_SIZE = 20.f;
 
+    constexpr float SNAKE_SEGMENT_SPACING = 20.f;
+
+    constexpr float SNAKE_GROWTH_PER_FISH = 0.25f;
+
     constexpr float SNAKE_COEFFICIENT_OF_PREDATOR_MODE = 0.8f;
 
     constexpr float GREEN_CIRCLE_SPEED_MIN = 0.10f;
@@ -44,6 +48,4 @@ namespace CONST
     constexpr float GREEN_CIRCLE_RADIUS = 20.0f;
 
     constexpr float GREEN_CIRCLE_OUTLINE_THICKNESS = 5.0f;
-
-    constexpr   float GROWTH_PERCENTAGE = 0.004f;
 }

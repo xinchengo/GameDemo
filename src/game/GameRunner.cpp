@@ -69,6 +69,7 @@ void GameRunner::step()
         
         // Remove all the fish been eaten
         auto hasEaten = [&](sf::Vector2f point) {return snake->hasEaten(point); };
-        fish.removeBoidsEaten(hasEaten);
+        int eaten = fish.removeBoidsEaten(hasEaten);
+        snake->lengthen(eaten * CONST::SNAKE_GROWTH_PER_FISH);
     }
 }
