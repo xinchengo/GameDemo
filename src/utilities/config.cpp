@@ -1,6 +1,8 @@
 #include "config.hpp"
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <locale>
+#include <codecvt>
 
 // Global configuration object
 Config config;
@@ -15,6 +17,12 @@ void Config::loadConfig(const std::string &filename)
     gameFramerateLimit = jsonConfig["game"].value("framerateLimit", gameFramerateLimit);
     gamePauseKey = jsonConfig["game"].value("pauseKey", gamePauseKey);
     gameDelayWhenGameIsOver = jsonConfig["game"].value("delayWhenGameIsOver", gameDelayWhenGameIsOver);
+    gameWindowWidth = jsonConfig["game"].value("windowWidth", gameWindowWidth);
+    gameWindowHeight = jsonConfig["game"].value("windowHeight", gameWindowHeight);
+    gameWindowTitle = jsonConfig["game"].value("windowTitle", gameWindowTitle);
+    gameScale = jsonConfig["game"].value("scale", gameScale);
+    gameApplyScaleInJSON = jsonConfig["game"].value("applyScaleInJSON", gameApplyScaleInJSON);
+    gameToggleFullscreenKey = jsonConfig["game"].value("toggleFullscreenKey", gameToggleFullscreenKey);
 
     // Load swarm settings
     swarmSeparationFactor = jsonConfig["swarm"].value("separationFactor", swarmSeparationFactor);
@@ -27,6 +35,7 @@ void Config::loadConfig(const std::string &filename)
     swarmSpeedLimit = jsonConfig["swarm"].value("speedLimit", swarmSpeedLimit);
     swarmEdgeRange = jsonConfig["swarm"].value("edgeRange", swarmEdgeRange);
     swarmDisappearTimeAfterEaten = jsonConfig["swarm"].value("disappearTimeAfterEaten", swarmDisappearTimeAfterEaten);
+    swarmFishColor = jsonConfig["swarm"].value("fishColor", swarmFishColor);
 
     // Load snake settings
     snakeSpeed = jsonConfig["snake"].value("speed", snakeSpeed);

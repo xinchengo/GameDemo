@@ -12,6 +12,8 @@ void SceneManager::setScene(std::shared_ptr<Scene> scene)
 
 void SceneManager::update()
 {
+    bool switchedScene = false;
+
     fetchEventsFromScene();
     while(events.empty() == false)
     {
@@ -22,15 +24,22 @@ void SceneManager::update()
         {
         case SceneEvent::Type::Pop:
             scenes.pop();
+            switchedScene = true;
             break;
         case SceneEvent::Type::Push:
             scenes.emplace(std::get<std::shared_ptr<Scene>>(event.nextScene));
+            switchedScene = true;
             break;
         default:
             break;
         }
         
         fetchEventsFromScene();
+    }
+
+    if(!scenes.empty() && switchedScene)
+    {
+        currentScene()->onActivate();
     }
     if (!scenes.empty()) 
     {

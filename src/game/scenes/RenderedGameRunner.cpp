@@ -1,12 +1,28 @@
 #include "RenderedGameRunner.hpp"
 #include <SFML/Window/Keyboard.hpp>
 
+#include "utilities/winutils.hpp"
+
+std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
+{
+    auto game = std::make_shared<RenderedGameRunner>(window);
+    game->newFish(100);
+    game->newGreenCircles(3);
+    game->newSnake(sf::Vector2f(0.0, 0.0), 20);
+    return game;
+}
+
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
-    GameRunner((float)window.getSize().x, (float)window.getSize().y),
+    GameRunner((float)window.getView().getSize().x, 
+                (float)window.getView().getSize().y),
     window(window)
 {
-    pauseKey = static_cast<sf::Keyboard::Key>(config.gamePauseKey);
     delayDuration = std::chrono::duration<float, std::ratio<1>>(config.gameDelayWhenGameIsOver);
+}
+
+void RenderedGameRunner::onActivate()
+{
+    disableResize(window);
 }
 
 void RenderedGameRunner::step()
@@ -21,12 +37,12 @@ void RenderedGameRunner::step()
             if (fish.getBoids().empty()) // If all the fish have been eaten
             {
                 popScene();
-                pushScene(winScene);
+                pushScene(std::make_shared<WinScene>(window));
             }
             else if (!eatenGreenCircles.empty()) // If the snake has eaten a green circle
             {
                 popScene();
-                pushScene(loseScene);
+                pushScene(std::make_shared<LoseScene>(window));
             }
         }
         return; // Skip updates during delay
@@ -59,7 +75,7 @@ void RenderedGameRunner::eventManager()
             window.close();
             break;
         case sf::Event::KeyPressed:
-            if(event.key.code == pauseKey)
+            if(event.key.code == config.gamePauseKey)
             {
                 isPaused = !isPaused; // Toggle pause state
             }
@@ -84,14 +100,4 @@ void RenderedGameRunner::render()
         snake->render(window);
     }
     fish.render(window);
-}
-
-void RenderedGameRunner::bindWinScene(std::shared_ptr<Scene> scene)
-{
-    winScene = scene;
-}
-
-void RenderedGameRunner::bindLoseScene(std::shared_ptr<Scene> scene)
-{
-    loseScene = scene;
 }

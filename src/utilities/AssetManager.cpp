@@ -23,6 +23,8 @@ bool TextureManager::loadFromImage(const std::string &name, const sf::Image &ima
     sf::Texture texture;  
     if(texture.loadFromImage(image, area))
     {  
+        texture.setSmooth(true);
+        texture.generateMipmap();
         textures[name] = std::move(texture);  // Store in map
         return true;  
     }

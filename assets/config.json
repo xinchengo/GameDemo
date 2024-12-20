@@ -2,24 +2,31 @@
     "game": {
         "framerateLimit": 60,
         "pauseKey": 15,
-        "delayWhenGameIsOver": 0.5
+        "delayWhenGameIsOver": 0.5,
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "windowTitle": "Twisty Snake & Wavy Fish",
+        "scale": 1.25,
+        "applyScaleInJSON": false,
+        "toggleFullscreenKey": 5
     },
     "swarm": {
         "separationFactor": 180.0,
         "alignmentFactor": 0.6,
         "cohesionFactor": 7.2,
         "turnFactor": 360.0,
-        "predatorRepulsionFactor": 180.0,
+        "predatorRepulsionFactor": 90.0,
         "visualRange": 75.0,
         "avoidThresholdRange": 20.0,
         "speedLimit": 180.0,
         "edgeRange": 100.0,
-        "disappearTimeAfterEaten": 1.0
+        "disappearTimeAfterEaten": 1.0,
+        "fishColor": 4278190335
     },
     "snake": {
         "speed": 120.0,
-        "circleSize": 20.0,
-        "segmentSpacing": 20.0,
+        "circleSize": 16.0,
+        "segmentSpacing": 16.0,
         "growthPerFish": 0.25,
         "maxTurnAngle": 3.0,
         "coefficientOfPredatorMode": 0.8,

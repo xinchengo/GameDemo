@@ -37,10 +37,13 @@ public:
 
     virtual ~Scene() = default;  
 
-    // Update the scene - called in the main loop  
+    // Called when the scene is activated
+    virtual void onActivate() = 0;
+
+    // Update the scene - called every frame 
     virtual void step() = 0;  
 
-    // Render the scene  
+    // Render the scene - called every frame 
     virtual void render() = 0;  
 
     // The scene's event manager

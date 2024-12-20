@@ -4,56 +4,56 @@
       "snakeBody": {
         "x": 0,
         "y": 0,
-        "width": 48,
-        "height": 48
+        "width": 40,
+        "height": 40
       },
       "greenCircle": {
         "x": 72,
         "y": 0,
-        "width": 52,
-        "height": 52
+        "width": 44,
+        "height": 44
       },
       "gameTitle": {
         "x": 144,
         "y": 0,
-        "width": 864,
-        "height": 144
+        "width": 720,
+        "height": 108
       },
       "startGame": {
         "x": 144,
         "y": 144,
-        "width": 432,
-        "height": 108
+        "width": 324,
+        "height": 84
       },
       "gameSettings": {
         "x": 144,
-        "y": 252,
-        "width": 432,
-        "height": 108
+        "y": 228,
+        "width": 324,
+        "height": 84
       },
       "exitGame": {
         "x": 144,
-        "y": 360,
-        "width": 432,
-        "height": 108
+        "y": 312,
+        "width": 324,
+        "height": 84
       },
       "aboutPage": {
         "x": 144,
-        "y": 468,
-        "width": 216,
+        "y": 396,
+        "width": 168,
+        "height": 84
+      },
+      "youLose": {
+        "x": 576,
+        "y": 144,
+        "width": 324,
         "height": 108
       },
       "youWin": {
-        "x": 720,
-        "y": 360,
-        "width": 432,
-        "height": 144
-      },
-      "youLose": {
-        "x": 720,
-        "y": 216,
-        "width": 432,
-        "height": 144
+        "x": 576,
+        "y": 252,
+        "width": 324,
+        "height": 108
       }
     }
   },

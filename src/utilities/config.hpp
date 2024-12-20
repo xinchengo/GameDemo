@@ -18,8 +18,14 @@ class Config
 {
 public:
     unsigned int gameFramerateLimit;
-    unsigned int gamePauseKey;
+    sf::Keyboard::Key gamePauseKey;
+    sf::Keyboard::Key gameToggleFullscreenKey;
     float gameDelayWhenGameIsOver;
+    unsigned int gameWindowWidth;
+    unsigned int gameWindowHeight;
+    std::string gameWindowTitle;
+    float gameScale;
+    bool gameApplyScaleInJSON;
 
     float swarmSeparationFactor;
     float swarmAlignmentFactor;
@@ -31,6 +37,7 @@ public:
     float swarmSpeedLimit;
     float swarmEdgeRange;
     float swarmDisappearTimeAfterEaten;
+    unsigned int swarmFishColor;
 
     float snakeSpeed;
     float snakeCircleSize;

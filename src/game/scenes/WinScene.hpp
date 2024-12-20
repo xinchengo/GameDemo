@@ -10,13 +10,11 @@ class WinScene : public Scene
 private:
     sf::RenderWindow &window;
     sf::Sprite text;
+
+    void WinScene::handleResize(sf::Vector2u windowSize);
 public:
-    WinScene(sf::RenderWindow &window) : window(window)
-    {
-        text.setTexture(assetManager.texture.get("youWin"), true);
-        text.setOrigin(text.getGlobalBounds().getSize() * 0.5f);
-        text.setPosition(window.getSize().x * 0.5f, window.getSize().y * 0.5f);
-    }
+    WinScene(sf::RenderWindow &window); // Declaration of constructor
+    void onActivate() override;
     void render() override;
     void step() override;
     void eventManager() override;
