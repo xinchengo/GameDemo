@@ -7,7 +7,8 @@
         "windowHeight": 720,
         "windowTitle": "Twisty Snake & Wavy Fish",
         "scale": 1.25,
-        "applyScaleInJSON": true
+        "applyScaleInJSON": true,
+        "toggleFullscreenKey": 5
     },
     "swarm": {
         "separationFactor": 180.0,
@@ -19,7 +20,8 @@
         "avoidThresholdRange": 20.0,
         "speedLimit": 180.0,
         "edgeRange": 100.0,
-        "disappearTimeAfterEaten": 1.0
+        "disappearTimeAfterEaten": 1.0,
+        "fishColor": 4278190335
     },
     "snake": {
         "speed": 120.0,

@@ -62,15 +62,7 @@ void Swarm::render(sf::RenderWindow &window)
 {
     sf::VertexArray tri(sf::Triangles);
 
-    // int normalCnt = 0;
-    // for(auto &boid : boids)
-    // {
-    //     if(boid.getCenter().x < width && boid.getCenter().y < height && boid.getCenter().x > 0 && boid.getCenter().y > 0)
-    //     {
-    //         normalCnt++;
-    //     }
-    // }
-    // std::cout << normalCnt << std::endl;
+    sf::Color boidColor(config.swarmFishColor);
 
     for(auto &boid : boids)
     {
@@ -80,9 +72,9 @@ void Swarm::render(sf::RenderWindow &window)
         sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), CONST::PI/18); 
         sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -CONST::PI/18);
 
-        tri.append(sf::Vertex(p1, sf::Color::Red));
-        tri.append(sf::Vertex(p2, sf::Color::Red));
-        tri.append(sf::Vertex(p3, sf::Color::Red));
+        tri.append(sf::Vertex(p1, boidColor));
+        tri.append(sf::Vertex(p2, boidColor));
+        tri.append(sf::Vertex(p3, boidColor));
     }
 
     window.draw(tri);

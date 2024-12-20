@@ -19,6 +19,7 @@ class Config
 public:
     unsigned int gameFramerateLimit;
     sf::Keyboard::Key gamePauseKey;
+    sf::Keyboard::Key gameToggleFullscreenKey;
     float gameDelayWhenGameIsOver;
     unsigned int gameWindowWidth;
     unsigned int gameWindowHeight;
@@ -36,6 +37,7 @@ public:
     float swarmSpeedLimit;
     float swarmEdgeRange;
     float swarmDisappearTimeAfterEaten;
+    unsigned int swarmFishColor;
 
     float snakeSpeed;
     float snakeCircleSize;

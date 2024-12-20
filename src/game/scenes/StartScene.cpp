@@ -75,7 +75,7 @@ void StartScene::eventManager()
             handleResize(sf::Vector2u(event.size.width, event.size.height));
             break;
         case sf::Event::KeyPressed:
-            if(event.key.code == sf::Keyboard::Key::F)
+            if(event.key.code == config.gameToggleFullscreenKey)
             {
                 toggleFullscreen(window);
                 handleResize(window.getSize());
