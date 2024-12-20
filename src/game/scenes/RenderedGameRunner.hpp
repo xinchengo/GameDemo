@@ -15,7 +15,6 @@ private:
     std::function<std::shared_ptr<Scene>(sf::RenderWindow &)> loseScene;
 
     bool isPaused = false;
-    sf::Keyboard::Key pauseKey; // Configurable pause key
 
     bool delayActive = false; // Add this line
     std::chrono::steady_clock::time_point delayStartTime; // Add this line

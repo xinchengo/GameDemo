@@ -11,7 +11,7 @@ private:
     sf::RenderWindow &window;
     sf::Sprite text;
 
-    void handleResize(sf::Vector2u size);
+    void handleResize(sf::Vector2u windowSize);
 public:
     LoseScene(sf::RenderWindow &window);
     void onActivate() override;

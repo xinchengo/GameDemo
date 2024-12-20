@@ -17,9 +17,11 @@ void Config::loadConfig(const std::string &filename)
     gameFramerateLimit = jsonConfig["game"].value("framerateLimit", gameFramerateLimit);
     gamePauseKey = jsonConfig["game"].value("pauseKey", gamePauseKey);
     gameDelayWhenGameIsOver = jsonConfig["game"].value("delayWhenGameIsOver", gameDelayWhenGameIsOver);
-    gameWindowWidth = jsonConfig["game"].value("gameWindowWidth", gameWindowWidth);
-    gameWindowHeight = jsonConfig["game"].value("gameWindowHeight", gameWindowHeight);
+    gameWindowWidth = jsonConfig["game"].value("windowWidth", gameWindowWidth);
+    gameWindowHeight = jsonConfig["game"].value("windowHeight", gameWindowHeight);
     gameWindowTitle = jsonConfig["game"].value("windowTitle", gameWindowTitle);
+    gameScale = jsonConfig["game"].value("scale", gameScale);
+    gameApplyScaleInJSON = jsonConfig["game"].value("applyScaleInJSON", gameApplyScaleInJSON);
 
     // Load swarm settings
     swarmSeparationFactor = jsonConfig["swarm"].value("separationFactor", swarmSeparationFactor);

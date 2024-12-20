@@ -23,7 +23,7 @@ private:
     sf::Sprite exitButton;
     sf::Sprite aboutButton;
     
-    void handleResize(sf::Vector2u size);
+    void handleResize(sf::Vector2u windowSize);
     
 public:
 

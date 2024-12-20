@@ -18,11 +18,13 @@ class Config
 {
 public:
     unsigned int gameFramerateLimit;
-    unsigned int gamePauseKey;
+    sf::Keyboard::Key gamePauseKey;
     float gameDelayWhenGameIsOver;
     unsigned int gameWindowWidth;
     unsigned int gameWindowHeight;
     std::string gameWindowTitle;
+    float gameScale;
+    bool gameApplyScaleInJSON;
 
     float swarmSeparationFactor;
     float swarmAlignmentFactor;

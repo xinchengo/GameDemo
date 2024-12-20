@@ -13,11 +13,10 @@ StartScene::StartScene(sf::RenderWindow &window) : window(window)
     handleResize(window.getSize());
 }
 
-void StartScene::handleResize(sf::Vector2u size)
+void StartScene::handleResize(sf::Vector2u windowSize)
 {
-    sf::FloatRect visibleArea(0, 0, 
-        static_cast<float>(size.x), static_cast<float>(size.y));
-    window.setView(sf::View(visibleArea));
+    window.setView(getView(windowSize, config.gameScale));
+    auto size = window.getView().getSize();
 
     title.setOrigin(title.getGlobalBounds().getSize() * 0.5f);
     title.setPosition(size.x * 0.5f, size.y * 0.2f);

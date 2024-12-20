@@ -4,6 +4,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include "WinUtils.hpp"
 #endif
 
 #ifdef _WIN32

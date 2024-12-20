@@ -2,11 +2,12 @@
 
 #include "utilities/WinUtils.hpp"
 
-void LoseScene::handleResize(sf::Vector2u size)
+void LoseScene::handleResize(sf::Vector2u windowSize)
 {
     sf::FloatRect visibleArea(0, 0, 
-        static_cast<float>(size.x), static_cast<float>(size.y));
+        static_cast<float>(windowSize.x), static_cast<float>(windowSize.y));
     window.setView(sf::View(visibleArea));
+    auto size = window.getView().getSize();
 
     text.setOrigin(text.getGlobalBounds().getSize() * 0.5f);
     text.setPosition(size.x * 0.5f, size.y * 0.5f);

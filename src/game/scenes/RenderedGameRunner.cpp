@@ -13,10 +13,10 @@ std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
 }
 
 RenderedGameRunner::RenderedGameRunner(sf::RenderWindow &window) : 
-    GameRunner((float)window.getSize().x, (float)window.getSize().y),
+    GameRunner((float)window.getView().getSize().x, 
+                (float)window.getView().getSize().y),
     window(window)
 {
-    pauseKey = static_cast<sf::Keyboard::Key>(config.gamePauseKey);
     delayDuration = std::chrono::duration<float, std::ratio<1>>(config.gameDelayWhenGameIsOver);
 }
 
@@ -75,7 +75,7 @@ void RenderedGameRunner::eventManager()
             window.close();
             break;
         case sf::Event::KeyPressed:
-            if(event.key.code == pauseKey)
+            if(event.key.code == config.gamePauseKey)
             {
                 isPaused = !isPaused; // Toggle pause state
             }

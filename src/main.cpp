@@ -16,7 +16,8 @@ int main()
     config.loadConfig("./assets/config.json");
     assetManager.loadAssets("./assets/assets.json");
 
-    sf::RenderWindow window(sf::VideoMode(config.gameWindowWidth, config.gameWindowHeight), 
+    sf::RenderWindow window(sf::VideoMode(config.gameWindowWidth * config.gameScale,
+         config.gameWindowHeight * config.gameScale), 
         sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
 
     // window.setVerticalSyncEnabled(true);
