@@ -69,8 +69,8 @@ void Swarm::render(sf::RenderWindow &window)
         sf::Vector2f p1 = boid.getCenter(), v = boid.getVelocity();
         if(v == sf::Vector2f(0.0f, 0.0f))
             v = sf::Vector2f(1.0f, 0.0f);
-        sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), CONST::PI/18); 
-        sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -CONST::PI/18);
+        sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), TSWF_CONST::PI/18); 
+        sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -TSWF_CONST::PI/18);
 
         tri.append(sf::Vertex(p1, boidColor));
         tri.append(sf::Vertex(p2, boidColor));
@@ -86,8 +86,8 @@ void Swarm::render(sf::RenderWindow &window)
         sf::Vector2f p1 = deadBoid.getCenter(), v = deadBoid.getVelocity();
         if(v == sf::Vector2f(0.0f, 0.0f))
             v = sf::Vector2f(1.0f, 0.0f);
-        sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), CONST::PI/18); 
-        sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -CONST::PI/18);
+        sf::Vector2f p2 = p1 - rotate(normalizeVec(v, 15), TSWF_CONST::PI/18); 
+        sf::Vector2f p3 = p1 - rotate(normalizeVec(v, 15), -TSWF_CONST::PI/18);
 
         tri.append(sf::Vertex(p1, sf::Color::White));
         tri.append(sf::Vertex(p2, sf::Color::White));

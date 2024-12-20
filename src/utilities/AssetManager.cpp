@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 
 AssetManager assetManager;
@@ -29,7 +30,10 @@ bool TextureManager::loadFromImage(const std::string &name, const sf::Image &ima
         return true;  
     }
     else
-        return false; 
+    {
+        std::cout << "Failed to open texture " << name << std::endl;
+        return false;
+    } 
 }
 
 sf::Texture &TextureManager::get(const std::string &name)

@@ -258,7 +258,7 @@ void Snake::lengthen(int count)
 void Snake::lengthen(float length)
 {
     partialGrowth += length;
-    int count = int(partialGrowth + CONST::FLOAT_EPS);
+    int count = int(partialGrowth + TSWF_CONST::FLOAT_EPS);
     partialGrowth -= count;
     lengthen(count);
 }

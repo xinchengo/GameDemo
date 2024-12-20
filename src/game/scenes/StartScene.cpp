@@ -86,6 +86,10 @@ void StartScene::eventManager()
             {
                 pushScene(newGame(window));
             }
+            else if(exitButton.getGlobalBounds().contains(worldPos))
+            {
+                window.close();
+            }
             break;
         default:
             break;    

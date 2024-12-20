@@ -57,7 +57,7 @@ public:
     /// @param x the intended speed 
     void setRandomVelocity(float x)
     {
-        float arg = randBetween(-CONST::PI, CONST::PI);
+        float arg = randBetween(-TSWF_CONST::PI, TSWF_CONST::PI);
         velocity = rotate(sf::Vector2f(x, 0.0f), arg);
     }
     /// @brief Get the velocity of the object

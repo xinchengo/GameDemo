@@ -1,6 +1,12 @@
 {
   "textures": {
     "images/images.png": {
+      "icon": {
+        "x": 1008,
+        "y": 0,
+        "width": 256,
+        "height": 256
+      },
       "snakeBody": {
         "x": 0,
         "y": 0,

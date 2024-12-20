@@ -17,10 +17,10 @@ sf::Int32 randOpaqueColor()
 
 float normalizeAngle(float x)
 {
-    float a = std::fmod(x + CONST::PI, 2.0f * CONST::PI);
+    float a = std::fmod(x + TSWF_CONST::PI, 2.0f * TSWF_CONST::PI);
     if(a <= 0.0f)
-        a += 2.0f * CONST::PI;
-    return a - CONST::PI;
+        a += 2.0f * TSWF_CONST::PI;
+    return a - TSWF_CONST::PI;
 }
 
 float dis2(sf::Vector2f a, sf::Vector2f b)
@@ -71,7 +71,7 @@ int orientation(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r)
 {
     float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
 
-    if (abs(val) < CONST::FLOAT_EPS) return 0;  // collinear
+    if (abs(val) < TSWF_CONST::FLOAT_EPS) return 0;  // collinear
     return (val > 0) ? 1 : 2;  // 1 -> clockwise, 2 -> counter-clockwise
 }
 bool helper_onSegment(sf::Vector2f p, sf::Vector2f q, sf::Vector2f r)
@@ -115,7 +115,7 @@ sf::Vector2f rotate(sf::Vector2f a, float x)
 
 sf::Vector2f randVecWithLength(float length)
 {
-    float arg = randBetween(-CONST::PI, CONST::PI);
+    float arg = randBetween(-TSWF_CONST::PI, TSWF_CONST::PI);
     return rotate(sf::Vector2f(length, 0), arg);
 }
 sf::Vector2f randPointInScreen(float width, float height)

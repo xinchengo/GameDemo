@@ -5,6 +5,12 @@
 #include<random>
 #include<cmath>
 #include<nlohmann/json.hpp>
+#include<memory>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
 
 #include "game/SceneManager.hpp"
 #include "game/scenes/StartScene.hpp"
@@ -12,7 +18,7 @@
 #include "utilities/WinUtils.hpp"
 #include "utilities/AssetManager.hpp"
 
-int main()
+int main(int argc, char *argv[])
 {
     config.loadConfig("./assets/config.json");
     assetManager.loadAssets("./assets/assets.json");
@@ -25,6 +31,9 @@ int main()
     sf::RenderWindow window(sf::VideoMode(static_cast<unsigned int>(config.gameWindowWidth * config.gameScale),
         static_cast<unsigned int>(config.gameWindowHeight * config.gameScale)),
         sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
+
+    const sf::Uint8* icon = assetManager.texture.get("icon").copyToImage().getPixelsPtr();
+    window.setIcon(assetManager.texture.get("icon").getSize().x, assetManager.texture.get("icon").getSize().y, icon);
 
     // window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(config.gameFramerateLimit);
@@ -47,3 +56,9 @@ int main()
 
     return 0;
 }
+
+#ifdef _WIN32
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    return main(__argc, __argv);
+}
+#endif
