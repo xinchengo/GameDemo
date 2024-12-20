@@ -1,7 +1,7 @@
 #include "RenderedGameRunner.hpp"
 #include <SFML/Window/Keyboard.hpp>
 
-#include "utilities/Winutils.hpp"
+#include "utilities/WinUtils.hpp"
 
 std::shared_ptr<RenderedGameRunner> newGame(sf::RenderWindow &window)
 {

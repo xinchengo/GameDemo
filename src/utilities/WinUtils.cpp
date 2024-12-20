@@ -6,7 +6,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <ShellScalingApi.h>
-#include "WinUtils.hpp"
 #endif
 
 #ifdef _WIN32
