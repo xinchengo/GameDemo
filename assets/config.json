@@ -7,7 +7,7 @@
         "windowHeight": 720,
         "windowTitle": "Twisty Snake & Wavy Fish",
         "scale": 1.25,
-        "applyScaleInJSON": true,
+        "applyScaleInJSON": false,
         "toggleFullscreenKey": 5
     },
     "swarm": {

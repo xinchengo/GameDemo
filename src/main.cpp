@@ -9,6 +9,7 @@
 #include "game/SceneManager.hpp"
 #include "game/scenes/StartScene.hpp"
 #include "utilities/config.hpp"
+#include "utilities/WinUtils.hpp"
 #include "utilities/AssetManager.hpp"
 
 int main()
@@ -16,8 +17,13 @@ int main()
     config.loadConfig("./assets/config.json");
     assetManager.loadAssets("./assets/assets.json");
 
+    if(config.gameApplyScaleInJSON == false)
+    {
+        config.gameScale = getWindowScale();
+    }
+
     sf::RenderWindow window(sf::VideoMode(static_cast<unsigned int>(config.gameWindowWidth * config.gameScale),
-         static_cast<unsigned int>(config.gameWindowHeight * config.gameScale)), 
+        static_cast<unsigned int>(config.gameWindowHeight * config.gameScale)),
         sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
 
     // window.setVerticalSyncEnabled(true);
