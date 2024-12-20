@@ -14,7 +14,7 @@
         "alignmentFactor": 0.6,
         "cohesionFactor": 7.2,
         "turnFactor": 360.0,
-        "predatorRepulsionFactor": 180.0,
+        "predatorRepulsionFactor": 90.0,
         "visualRange": 75.0,
         "avoidThresholdRange": 20.0,
         "speedLimit": 180.0,

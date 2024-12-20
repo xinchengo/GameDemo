@@ -173,15 +173,43 @@ void Snake::render(sf::RenderWindow& window)
     for(auto &polygon : predatorPolygons)
         drawPolygonIndicator(polygon, window);
     
-    sf::Sprite shape;
-    shape.setTexture(assetManager.texture.get("snakeBody"), true);
-    shape.setOrigin(shape.getGlobalBounds().getSize() * 0.5f);
+    sf::Texture& texture = assetManager.texture.get("snakeBody");
+    float diameter = static_cast<float>(texture.getSize().x);
+    sf::Vector2f origin(diameter * 0.5f, diameter * 0.5f);
 
-    for(auto &it : body)
+    sf::VertexArray vertices(sf::Triangles, body.size() * 6);
+
+    for (size_t i = 0; i < body.size(); ++i)
     {
-        shape.setPosition(it);
-        window.draw(shape);
+        sf::Vector2f position = body[i];
+
+        sf::Vector2f topLeft = position - origin;
+        sf::Vector2f topRight = position + sf::Vector2f(origin.x, -origin.y);
+        sf::Vector2f bottomRight = position + origin;
+        sf::Vector2f bottomLeft = position + sf::Vector2f(-origin.x, origin.y);
+
+        // First triangle (top-left, top-right, bottom-right)
+        vertices[i * 6 + 0].position = topLeft;
+        vertices[i * 6 + 1].position = topRight;
+        vertices[i * 6 + 2].position = bottomRight;
+
+        // Second triangle (top-left, bottom-right, bottom-left)
+        vertices[i * 6 + 3].position = topLeft;
+        vertices[i * 6 + 4].position = bottomRight;
+        vertices[i * 6 + 5].position = bottomLeft;
+
+        vertices[i * 6 + 0].texCoords = sf::Vector2f(0.f, 0.f);
+        vertices[i * 6 + 1].texCoords = sf::Vector2f(diameter, 0.f);
+        vertices[i * 6 + 2].texCoords = sf::Vector2f(diameter, diameter);
+        vertices[i * 6 + 3].texCoords = sf::Vector2f(0.f, 0.f);
+        vertices[i * 6 + 4].texCoords = sf::Vector2f(diameter, diameter);
+        vertices[i * 6 + 5].texCoords = sf::Vector2f(0.f, diameter);
     }
+
+    sf::RenderStates states;
+    states.texture = &texture;
+
+    window.draw(vertices, states);
 }
 void Snake::setVelocityFromMousePos(sf::RenderWindow& window, float time)
 {
