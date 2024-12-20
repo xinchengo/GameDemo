@@ -11,7 +11,7 @@ private:
     sf::RenderWindow &window;
     sf::Sprite text;
 
-    void WinScene::handleResize(sf::Vector2u windowSize);
+    void handleResize(sf::Vector2u windowSize);
 public:
     WinScene(sf::RenderWindow &window); // Declaration of constructor
     void onActivate() override;
