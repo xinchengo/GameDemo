@@ -62,15 +62,16 @@ void Snake::drawPolygonIndicator(Clipper2Lib::PathD &polygon, sf::RenderWindow &
     sf::VertexArray triangleVertices(sf::Triangles);
 
     // Convert each triangle to SFML vertices and add to the VertexArray
+    sf::Color indicatorColor(config.snakePolygonIndicatorColor);
     for (const auto &triangle : triangles)
     {
         sf::Vertex vertex0, vertex1, vertex2;
-        vertex0.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(0)));
-        vertex1.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(1)));
-        vertex2.position = sf::Vector2f(toVec<float>(*triangle->GetPoint(2)));
-        vertex0.color = sf::Color(config.snakePolygonIndicatorColor);
-        vertex1.color = sf::Color(config.snakePolygonIndicatorColor);
-        vertex2.color = sf::Color(config.snakePolygonIndicatorColor);
+        vertex0.position = toVec<float>(*triangle->GetPoint(0));
+        vertex1.position = toVec<float>(*triangle->GetPoint(1));
+        vertex2.position = toVec<float>(*triangle->GetPoint(2));
+        vertex0.color = indicatorColor;
+        vertex1.color = indicatorColor;
+        vertex2.color = indicatorColor;
 
         triangleVertices.append(vertex0);
         triangleVertices.append(vertex1);

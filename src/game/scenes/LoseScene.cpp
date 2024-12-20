@@ -4,9 +4,7 @@
 
 void LoseScene::handleResize(sf::Vector2u windowSize)
 {
-    sf::FloatRect visibleArea(0, 0, 
-        static_cast<float>(windowSize.x), static_cast<float>(windowSize.y));
-    window.setView(sf::View(visibleArea));
+    window.setView(getView(windowSize, config.gameScale));
     auto size = window.getView().getSize();
 
     text.setOrigin(text.getGlobalBounds().getSize() * 0.5f);
