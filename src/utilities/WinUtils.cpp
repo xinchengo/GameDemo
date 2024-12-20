@@ -32,6 +32,10 @@ void disableResize(sf::RenderWindow &window)
         SetWindowPos(handle, NULL, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
     }
 }
+#else
+void enableResize(sf::RenderWindow &window) {}
+void disableResize(sf::RenderWindow &window) {}
+#endif
 void toggleFullscreen(sf::RenderWindow &window)
 {
     static auto size = window.getSize();
@@ -51,4 +55,3 @@ void toggleFullscreen(sf::RenderWindow &window)
             sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
     }
 }
-#endif
