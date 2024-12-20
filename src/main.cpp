@@ -32,8 +32,7 @@ int main(int argc, char *argv[])
         static_cast<unsigned int>(config.gameWindowHeight * config.gameScale)),
         sf::String::fromUtf8(config.gameWindowTitle.begin(), config.gameWindowTitle.end()));
 
-    const sf::Uint8* icon = assetManager.texture.get("icon").copyToImage().getPixelsPtr();
-    window.setIcon(assetManager.texture.get("icon").getSize().x, assetManager.texture.get("icon").getSize().y, icon);
+    window.setIcon(assetManager.texture.get("icon").getSize().x, assetManager.texture.get("icon").getSize().y, assetManager.texture.get("icon").copyToImage().getPixelsPtr());
 
     // window.setVerticalSyncEnabled(true);
     window.setFramerateLimit(config.gameFramerateLimit);
